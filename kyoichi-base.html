@@ -1,4 +1,4 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
@@ -18,11 +18,19 @@
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { font-family: 'Noto Sans JP', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; padding-bottom: 80px; }
 
-.header { background: #F8F8F8; padding: 16px 20px 20px; border-bottom: 1px solid var(--border); }
+.header { background: #F8F8F8; padding: 12px 16px 8px; border-bottom: 1px solid var(--border); }
+.header img { max-width: 200px; width: 60%; height: auto; display: block; margin: 0 auto 4px; }
+.header p { text-align: center; color: var(--text-muted); font-size: 11px; }
 
-.nav { display: flex; background: white; border-bottom: 1px solid var(--border); overflow-x: auto; scrollbar-width: none; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+/* 子ども切り替えバー */
+.child-bar { background: white; border-bottom: 1px solid var(--border); padding: 8px 16px; display: flex; align-items: center; gap: 10px; position: sticky; top: 0; z-index: 101; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+.child-select { flex: 1; padding: 8px 12px; border: 1.5px solid var(--primary); border-radius: 20px; font-size: 14px; font-weight: 700; color: var(--primary); background: white; font-family: 'Noto Sans JP', sans-serif; -webkit-appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23FF8C69' d='M6 8L0 0h12z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 30px; }
+.child-grade { font-size: 12px; font-weight: 700; color: white; background: var(--primary); padding: 4px 10px; border-radius: 20px; white-space: nowrap; }
+.child-add-btn { background: none; border: 1.5px solid var(--border); border-radius: 20px; padding: 6px 12px; font-size: 12px; font-weight: 700; color: var(--text-muted); cursor: pointer; font-family: inherit; white-space: nowrap; }
+
+.nav { display: flex; background: white; border-bottom: 1px solid var(--border); overflow-x: auto; scrollbar-width: none; position: sticky; top: 49px; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
 .nav::-webkit-scrollbar { display: none; }
-.nav-btn { flex: none; padding: 14px 14px; font-size: 11px; font-weight: 700; color: var(--text-muted); background: none; border: none; cursor: pointer; white-space: nowrap; position: relative; font-family: 'Noto Sans JP', sans-serif; }
+.nav-btn { flex: none; padding: 12px 14px; font-size: 11px; font-weight: 700; color: var(--text-muted); background: none; border: none; cursor: pointer; white-space: nowrap; position: relative; font-family: 'Noto Sans JP', sans-serif; }
 .nav-btn.active { color: var(--primary); }
 .nav-btn.active::after { content: ''; position: absolute; bottom: 0; left: 8px; right: 8px; height: 3px; background: var(--primary); border-radius: 3px 3px 0 0; }
 
@@ -43,7 +51,7 @@ textarea { resize: vertical; min-height: 80px; }
 .btn-primary { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; }
 .btn-accent { background: linear-gradient(135deg, var(--accent), var(--accent-dark)); color: white; }
 .btn-ghost { background: var(--bg); color: var(--text-light); border: 1.5px solid var(--border); }
-.btn-sm { padding: 8px 14px; font-size: 12px; width: auto; }
+.btn-danger { background: white; color: #E53E3E; border: 1.5px solid #FEB2B2; }
 
 .prompt-box { background: #1A1A2E; border-radius: var(--radius); padding: 20px; margin-bottom: 16px; }
 .prompt-title { font-family: 'Zen Maru Gothic', sans-serif; font-size: 14px; font-weight: 700; color: white; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
@@ -67,6 +75,8 @@ textarea { resize: vertical; min-height: 80px; }
 .subject-name { width: 36px; font-size: 13px; font-weight: 700; color: var(--text-light); text-align: center; flex-shrink: 0; }
 .subject-row input { flex: 1; padding: 10px; text-align: center; font-size: 16px; font-weight: 700; }
 .subject-max { font-size: 11px; color: var(--text-muted); flex-shrink: 0; width: 36px; }
+.auto-total { background: linear-gradient(135deg, #FFF0EC, #FFF8F6); border: 1.5px solid var(--primary-light); border-radius: var(--radius-sm); padding: 10px 14px; text-align: center; margin: 10px 0; font-size: 18px; font-weight: 700; color: var(--primary); }
+.auto-total span { font-size: 12px; color: var(--text-muted); font-weight: 400; display: block; }
 
 .info-row { display: flex; gap: 10px; }
 .info-row > div { flex: 1; }
@@ -78,6 +88,7 @@ textarea { resize: vertical; min-height: 80px; }
 .test-badge.teiki { background: var(--purple); }
 .test-badge.jitsuryoku { background: var(--accent-dark); }
 .test-badge.range { background: #ED8936; }
+.grade-tag { font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 10px; background: #EDF2F7; color: #4A5568; margin-left: 6px; }
 .del-btn { background: none; border: none; color: var(--text-muted); font-size: 18px; cursor: pointer; padding: 4px; line-height: 1; }
 
 .work-item { display: flex; align-items: center; gap: 12px; background: var(--bg); border-radius: var(--radius-sm); padding: 14px; margin-bottom: 10px; border: 1.5px solid var(--border); }
@@ -90,19 +101,16 @@ textarea { resize: vertical; min-height: 80px; }
 .paste-hint { font-size: 12px; color: var(--text-muted); margin-bottom: 8px; text-align: center; }
 .paste-area textarea { border: none; background: transparent; padding: 0; font-size: 12px; min-height: 80px; }
 
-/* カルテ */
 .karte-box { background: #1A1A2E; border-radius: var(--radius); padding: 20px; }
 .karte-text { font-size: 12px; color: rgba(255,255,255,0.85); line-height: 1.8; font-family: monospace; white-space: pre-wrap; word-break: break-all; }
 .karte-copy-btn { background: var(--accent); color: white; border: none; border-radius: 8px; padding: 12px 16px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: 'Noto Sans JP', sans-serif; width: 100%; margin-top: 12px; }
 
-/* チェックボックス */
 .check-item { display: flex; align-items: flex-start; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--border); }
 .check-item:last-child { border-bottom: none; }
 .check-item input[type="checkbox"] { width: 20px; height: 20px; margin-top: 2px; accent-color: var(--primary); flex-shrink: 0; cursor: pointer; }
 .check-item label { font-size: 14px; font-weight: 500; color: var(--text); margin: 0; cursor: pointer; line-height: 1.5; }
 
-/* 相談目的チェック */
-.purpose-item { display: flex; align-items: flex-start; gap: 10px; padding: 10px 12px; border-radius: 10px; margin-bottom: 8px; background: var(--bg); border: 1.5px solid var(--border); cursor: pointer; transition: all 0.2s; }
+.purpose-item { display: flex; align-items: flex-start; gap: 10px; padding: 10px 12px; border-radius: 10px; margin-bottom: 8px; background: var(--bg); border: 1.5px solid var(--border); cursor: pointer; }
 .purpose-item.checked { background: #FFF0EC; border-color: var(--primary); }
 .purpose-item input[type="checkbox"] { width: 20px; height: 20px; margin-top: 1px; accent-color: var(--primary); flex-shrink: 0; cursor: pointer; }
 .purpose-item label { font-size: 13px; font-weight: 600; color: var(--text); margin: 0; cursor: pointer; line-height: 1.5; flex: 1; }
@@ -110,34 +118,54 @@ textarea { resize: vertical; min-height: 80px; }
 /* カレンダー */
 .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; margin-top: 12px; }
 .cal-header { text-align: center; font-size: 11px; font-weight: 700; color: var(--text-muted); padding: 6px 2px; }
-.cal-header.sun { color: #E53E3E; }
-.cal-header.sat { color: #3182CE; }
+.cal-header.sun { color: #E53E3E; } .cal-header.sat { color: #3182CE; }
 .cal-day { min-height: 40px; border-radius: 6px; padding: 4px 2px; text-align: center; background: white; border: 1px solid var(--border); }
 .cal-day.empty { background: transparent; border: none; }
 .cal-day.today { background: #FFF0EC; border-color: var(--primary); }
 .cal-day-num { font-size: 12px; font-weight: 700; color: var(--text); line-height: 1; }
-.cal-day.sun .cal-day-num { color: #E53E3E; }
-.cal-day.sat .cal-day-num { color: #3182CE; }
+.cal-day.sun .cal-day-num { color: #E53E3E; } .cal-day.sat .cal-day-num { color: #3182CE; }
 .cal-event { font-size: 9px; background: var(--primary); color: white; border-radius: 3px; padding: 1px 3px; margin-top: 2px; line-height: 1.3; text-align: left; }
-.cal-event.exam { background: #E53E3E; }
-.cal-event.test { background: var(--purple); }
-.cal-event.school { background: var(--accent-dark); }
-.cal-event.work { background: #ED8936; }
-
+.cal-event.exam { background: #E53E3E; } .cal-event.test { background: var(--purple); } .cal-event.school { background: var(--accent-dark); }
 .cal-nav { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
 .cal-nav-btn { background: var(--bg); border: 1.5px solid var(--border); border-radius: 8px; padding: 6px 12px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: 'Noto Sans JP', sans-serif; color: var(--text); }
 .cal-month { font-family: 'Zen Maru Gothic', sans-serif; font-size: 16px; font-weight: 700; color: var(--text); }
-
+.cal-toggle { display: flex; gap: 8px; margin-bottom: 12px; }
+.cal-toggle-btn { flex: 1; padding: 8px; border-radius: 8px; border: 1.5px solid var(--border); background: white; font-size: 12px; font-weight: 700; color: var(--text-muted); cursor: pointer; font-family: inherit; }
+.cal-toggle-btn.active { border-color: var(--primary); background: var(--primary); color: white; }
 .cal-legend { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
 .cal-legend-item { display: flex; align-items: center; gap: 4px; font-size: 11px; color: var(--text-light); }
 .cal-legend-dot { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
-
-/* スケジュールリスト */
 .schedule-item { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--border); }
 .schedule-item:last-child { border-bottom: none; }
 .schedule-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; background: var(--primary); }
 .schedule-date { font-size: 13px; font-weight: 700; color: var(--text); min-width: 80px; }
 .schedule-name { font-size: 13px; color: var(--text-light); flex: 1; }
+
+/* グラフ */
+.graph-wrap { width: 100%; overflow-x: auto; }
+.graph-filter { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
+.graph-filter-btn { padding: 6px 12px; border-radius: 20px; border: 1.5px solid var(--border); background: white; font-size: 11px; font-weight: 700; cursor: pointer; font-family: inherit; color: var(--text-muted); }
+.graph-filter-btn.active { border-color: var(--primary); background: var(--primary); color: white; }
+.graph-legend { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
+.graph-legend-item { display: flex; align-items: center; gap: 4px; font-size: 11px; color: var(--text-light); }
+.graph-legend-dot { width: 12px; height: 4px; border-radius: 2px; flex-shrink: 0; }
+.graph-copy-btn { background: var(--bg); border: 1.5px solid var(--border); border-radius: 8px; padding: 8px 14px; font-size: 12px; font-weight: 700; cursor: pointer; font-family: inherit; color: var(--text-light); margin-top: 10px; display: flex; align-items: center; gap: 6px; width: 100%; justify-content: center; }
+.grade-filter { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 8px; }
+.grade-filter-btn { padding: 5px 10px; border-radius: 20px; border: 1.5px solid var(--border); background: white; font-size: 11px; font-weight: 700; cursor: pointer; font-family: inherit; color: var(--text-muted); }
+.grade-filter-btn.active { border-color: var(--purple); background: var(--purple); color: white; }
+
+/* 子ども管理モーダル */
+.modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 500; align-items: flex-end; }
+.modal-overlay.show { display: flex; }
+.modal { background: white; border-radius: 20px 20px 0 0; padding: 24px 20px; width: 100%; max-height: 80vh; overflow-y: auto; }
+.modal-title { font-family: 'Zen Maru Gothic', sans-serif; font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 16px; }
+.child-list-item { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--border); }
+.child-list-item:last-child { border-bottom: none; }
+.child-avatar { width: 36px; height: 36px; background: linear-gradient(135deg, var(--primary), var(--primary-light)); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+.child-list-info { flex: 1; }
+.child-list-name { font-size: 14px; font-weight: 700; color: var(--text); }
+.child-list-grade { font-size: 12px; color: var(--text-muted); }
+.grade-up-btn { background: var(--success); color: white; border: none; border-radius: 8px; padding: 6px 10px; font-size: 11px; font-weight: 700; cursor: pointer; font-family: inherit; }
 
 .toast { position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%) translateY(20px); background: #2D3748; color: white; padding: 10px 20px; border-radius: 20px; font-size: 13px; font-weight: 700; opacity: 0; transition: all 0.3s; z-index: 1000; white-space: nowrap; pointer-events: none; }
 .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
@@ -148,28 +176,22 @@ textarea { resize: vertical; min-height: 80px; }
 .bnav-btn.active { color: var(--primary); }
 
 .empty-state { text-align: center; padding: 30px 20px; color: var(--text-muted); font-size: 13px; }
-
-/* グラフ */
-.graph-wrap { width: 100%; overflow-x: auto; }
-.graph-filter { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
-.graph-filter-btn { padding: 6px 12px; border-radius: 20px; border: 1.5px solid var(--border); background: white; font-size: 11px; font-weight: 700; cursor: pointer; font-family: inherit; color: var(--text-muted); }
-.graph-filter-btn.active { border-color: var(--primary); background: var(--primary); color: white; }
-.graph-legend { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
-.graph-legend-item { display: flex; align-items: center; gap: 4px; font-size: 11px; color: var(--text-light); }
-.graph-legend-dot { width: 12px; height: 4px; border-radius: 2px; flex-shrink: 0; }
-.graph-copy-btn { background: var(--bg); border: 1.5px solid var(--border); border-radius: 8px; padding: 8px 14px; font-size: 12px; font-weight: 700; cursor: pointer; font-family: inherit; color: var(--text-light); margin-top: 10px; display: flex; align-items: center; gap: 6px; }
 .empty-icon { font-size: 36px; margin-bottom: 8px; }
 .section-desc { font-size: 13px; color: var(--text-light); line-height: 1.6; margin-bottom: 16px; }
-.divider { height: 1px; background: var(--border); margin: 16px 0; }
 </style>
 </head>
 <body>
 
 <div class="header">
-  <div style="text-align:center;padding:8px 0 4px;">
-    <img src="logo.png" alt="きょういちベース" style="max-width:260px;width:80%;height:auto;">
-  </div>
-  <p style="text-align:center;color:var(--text-muted);font-size:12px;margin-top:4px;">学習カルテを作って、きょういちプランナーに渡そう</p>
+  <img src="logo.png" alt="きょういちベース">
+  <p>学習カルテを作って、きょういちプランナーに渡そう</p>
+</div>
+
+<!-- 子ども切り替えバー -->
+<div class="child-bar">
+  <select class="child-select" id="childSelect" onchange="switchChild(this.value)"></select>
+  <div class="child-grade" id="childGradeTag">-</div>
+  <button class="child-add-btn" onclick="showChildModal()">＋ 子どもを追加</button>
 </div>
 
 <nav class="nav">
@@ -219,6 +241,15 @@ textarea { resize: vertical; min-height: 80px; }
     <input type="text" id="nickname" placeholder="例：たろう、はなちゃん">
     <label>誕生日</label>
     <input type="date" id="birthday">
+    <label>学年</label>
+    <select id="grade">
+      <option value="小1">小学1年生</option><option value="小2">小学2年生</option>
+      <option value="小3">小学3年生</option><option value="小4">小学4年生</option>
+      <option value="小5">小学5年生</option><option value="小6">小学6年生</option>
+      <option value="中1">中学1年生</option><option value="中2">中学2年生</option>
+      <option value="中3">中学3年生</option><option value="高1">高校1年生</option>
+      <option value="高2">高校2年生</option><option value="高3">高校3年生</option>
+    </select>
   </div>
 
   <div class="card">
@@ -238,7 +269,7 @@ textarea { resize: vertical; min-height: 80px; }
 
   <div class="card">
     <div class="card-title"><span class="icon">📅</span>受験日程・イベント</div>
-    <p class="section-desc">固定項目に加えて、自由に追加できます。</p>
+    <p class="section-desc">任意で追加できます。</p>
     <div id="scheduleItems"></div>
     <button class="btn btn-ghost" style="margin-top:8px;" onclick="addScheduleItem()">＋ 日程・イベントを追加</button>
   </div>
@@ -254,6 +285,10 @@ textarea { resize: vertical; min-height: 80px; }
 <section id="tab-calendar" class="section">
   <div class="card">
     <div class="card-title"><span class="icon">📅</span>スケジュールカレンダー</div>
+    <div class="cal-toggle">
+      <button class="cal-toggle-btn active" id="calModeThis" onclick="setCalMode('this')">この子だけ</button>
+      <button class="cal-toggle-btn" id="calModeAll" onclick="setCalMode('all')">全員表示</button>
+    </div>
     <div class="cal-nav">
       <button class="cal-nav-btn" onclick="calPrev()">◀</button>
       <div class="cal-month" id="calMonth"></div>
@@ -264,7 +299,6 @@ textarea { resize: vertical; min-height: 80px; }
       <div class="cal-legend-item"><div class="cal-legend-dot" style="background:#E53E3E;"></div>受験日</div>
       <div class="cal-legend-item"><div class="cal-legend-dot" style="background:var(--purple);"></div>テスト</div>
       <div class="cal-legend-item"><div class="cal-legend-dot" style="background:var(--accent-dark);"></div>イベント</div>
-      <div class="cal-legend-item"><div class="cal-legend-dot" style="background:var(--primary);"></div>その他</div>
     </div>
   </div>
   <div class="card">
@@ -289,15 +323,16 @@ textarea { resize: vertical; min-height: 80px; }
       <div><label>実施日</label><input type="date" id="tDate"></div>
     </div>
     <div id="scoreFields">
-      <label>教科別点数（空欄はスキップ）</label>
-      <div class="subject-row"><span class="subject-name">国語</span><input type="number" id="s_kokugo" placeholder="点数" min="0"><span class="subject-max">点</span></div>
-      <div class="subject-row"><span class="subject-name">数学</span><input type="number" id="s_sugaku" placeholder="点数" min="0"><span class="subject-max">点</span></div>
-      <div class="subject-row"><span class="subject-name">英語</span><input type="number" id="s_eigo" placeholder="点数" min="0"><span class="subject-max">点</span></div>
-      <div class="subject-row"><span class="subject-name">理科</span><input type="number" id="s_rika" placeholder="点数" min="0"><span class="subject-max">点</span></div>
-      <div class="subject-row"><span class="subject-name">社会</span><input type="number" id="s_shakai" placeholder="点数" min="0"><span class="subject-max">点</span></div>
-      <div class="subject-row"><span class="subject-name">算数</span><input type="number" id="s_sansu" placeholder="点数" min="0"><span class="subject-max">点</span></div>
+      <label>教科別点数（空欄はスキップ・入力で合計自動計算）</label>
+      <div class="subject-row"><span class="subject-name">国語</span><input type="number" id="s_kokugo" placeholder="点数" min="0" oninput="calcTotal()"><span class="subject-max">点</span></div>
+      <div class="subject-row"><span class="subject-name">数学</span><input type="number" id="s_sugaku" placeholder="点数" min="0" oninput="calcTotal()"><span class="subject-max">点</span></div>
+      <div class="subject-row"><span class="subject-name">英語</span><input type="number" id="s_eigo" placeholder="点数" min="0" oninput="calcTotal()"><span class="subject-max">点</span></div>
+      <div class="subject-row"><span class="subject-name">理科</span><input type="number" id="s_rika" placeholder="点数" min="0" oninput="calcTotal()"><span class="subject-max">点</span></div>
+      <div class="subject-row"><span class="subject-name">社会</span><input type="number" id="s_shakai" placeholder="点数" min="0" oninput="calcTotal()"><span class="subject-max">点</span></div>
+      <div class="subject-row"><span class="subject-name">算数</span><input type="number" id="s_sansu" placeholder="点数" min="0" oninput="calcTotal()"><span class="subject-max">点</span></div>
+      <div class="auto-total" id="autoTotal" style="display:none;"><span>合計（自動計算）</span><span id="autoTotalNum">0点</span></div>
       <div class="grid2" style="margin-top:10px;">
-        <div><label>合計点</label><input type="number" id="tTotal" placeholder="合計"></div>
+        <div><label>合計点（手動入力・任意）</label><input type="number" id="tTotal" placeholder="合計"></div>
         <div><label>偏差値</label><input type="number" id="tDeviation" placeholder="偏差値" step="0.1"></div>
       </div>
       <div class="grid2">
@@ -309,6 +344,7 @@ textarea { resize: vertical; min-height: 80px; }
     <textarea id="tMemo" placeholder="気になったこと、テスト範囲の要点など..."></textarea>
     <button class="btn btn-primary" style="margin-top:16px;" onclick="addTest()">📊 追加する</button>
   </div>
+
   <div class="card">
     <div class="card-title"><span class="icon">📈</span>教科別点数グラフ</div>
     <div class="graph-filter">
@@ -317,6 +353,7 @@ textarea { resize: vertical; min-height: 80px; }
       <button class="graph-filter-btn" onclick="setGraphFilter('定期テスト',this)">定期</button>
       <button class="graph-filter-btn" onclick="setGraphFilter('実力テスト',this)">実力</button>
     </div>
+    <div class="grade-filter" id="gradeFilter"></div>
     <div class="graph-wrap">
       <canvas id="scoreChart" width="340" height="220" style="width:100%;height:220px;display:block;"></canvas>
     </div>
@@ -335,7 +372,7 @@ textarea { resize: vertical; min-height: 80px; }
   <div class="how-to" style="border-color:var(--accent);background:linear-gradient(135deg,#E6FFFA,#F0FFFE);">
     <div class="how-to-title" style="color:var(--accent-dark);">📚 ワークの登録方法</div>
     <ol class="how-to-steps">
-      <li><span class="step-num" style="background:var(--accent);">1</span><span>ワークの表紙をChatGPTに写真で送る（プロンプトタブのプロンプトを使ってね）</span></li>
+      <li><span class="step-num" style="background:var(--accent);">1</span><span>ワークの表紙をChatGPTに写真で送る</span></li>
       <li><span class="step-num" style="background:var(--accent);">2</span><span>返ってきたテキストをプロンプトタブでペーストして取り込む</span></li>
       <li><span class="step-num" style="background:var(--accent);">3</span><span>きょういちが「このワーク使えてる？」って聞いてくれる✨</span></li>
     </ol>
@@ -365,32 +402,17 @@ textarea { resize: vertical; min-height: 80px; }
 
 <!-- カルテ -->
 <section id="tab-karte" class="section">
-
   <div class="card">
     <div class="card-title"><span class="icon">🎯</span>今日の相談目的</div>
     <p class="section-desc">複数選択OKです。カルテの冒頭に記載されます。</p>
     <div id="purposeList">
-      <div class="purpose-item" onclick="togglePurpose(this,'受験に向けて総合的に相談したい')">
-        <input type="checkbox" onclick="event.stopPropagation()"><label>受験に向けて総合的に相談したい</label>
-      </div>
-      <div class="purpose-item" onclick="togglePurpose(this,'テスト結果を元に今後の計画を立てたい')">
-        <input type="checkbox" onclick="event.stopPropagation()"><label>テスト結果を元に今後の計画を立てたい</label>
-      </div>
-      <div class="purpose-item" onclick="togglePurpose(this,'定期テスト・実力テスト・模試対策を相談したい')">
-        <input type="checkbox" onclick="event.stopPropagation()"><label>定期テスト・実力テスト・模試対策を相談したい</label>
-      </div>
-      <div class="purpose-item" onclick="togglePurpose(this,'ワークの進め方・周回計画を相談したい')">
-        <input type="checkbox" onclick="event.stopPropagation()"><label>ワークの進め方・周回計画を相談したい</label>
-      </div>
-      <div class="purpose-item" onclick="togglePurpose(this,'勉強のやる気・メンタル面を相談したい')">
-        <input type="checkbox" onclick="event.stopPropagation()"><label>勉強のやる気・メンタル面を相談したい</label>
-      </div>
-      <div class="purpose-item" onclick="togglePurpose(this,'志望校・受験校の選び方を相談したい')">
-        <input type="checkbox" onclick="event.stopPropagation()"><label>志望校・受験校の選び方を相談したい</label>
-      </div>
-      <div class="purpose-item" id="otherPurposeItem" onclick="togglePurpose(this,'その他')">
-        <input type="checkbox" onclick="event.stopPropagation()"><label>その他</label>
-      </div>
+      <div class="purpose-item" onclick="togglePurpose(this)"><input type="checkbox" onclick="event.stopPropagation()"><label>受験に向けて総合的に相談したい</label></div>
+      <div class="purpose-item" onclick="togglePurpose(this)"><input type="checkbox" onclick="event.stopPropagation()"><label>テスト結果を元に今後の計画を立てたい</label></div>
+      <div class="purpose-item" onclick="togglePurpose(this)"><input type="checkbox" onclick="event.stopPropagation()"><label>定期テスト・実力テスト・模試対策を相談したい</label></div>
+      <div class="purpose-item" onclick="togglePurpose(this)"><input type="checkbox" onclick="event.stopPropagation()"><label>ワークの進め方・周回計画を相談したい</label></div>
+      <div class="purpose-item" onclick="togglePurpose(this)"><input type="checkbox" onclick="event.stopPropagation()"><label>勉強のやる気・メンタル面を相談したい</label></div>
+      <div class="purpose-item" onclick="togglePurpose(this)"><input type="checkbox" onclick="event.stopPropagation()"><label>志望校・受験校の選び方を相談したい</label></div>
+      <div class="purpose-item" id="otherPurposeItem" onclick="togglePurpose(this)"><input type="checkbox" onclick="event.stopPropagation()"><label>その他</label></div>
     </div>
     <div id="otherPurposeBox" style="display:none;margin-top:10px;">
       <input type="text" id="otherPurposeText" placeholder="相談したいことを自由に書いてください...">
@@ -401,7 +423,7 @@ textarea { resize: vertical; min-height: 80px; }
     <div class="card-title"><span class="icon">☑️</span>カルテに含める項目</div>
     <p class="section-desc">不要な項目はチェックを外してください。</p>
     <div>
-      <div class="check-item"><input type="checkbox" id="inc_basic" checked><label for="inc_basic">基本情報（志望校・受験タイプ）</label></div>
+      <div class="check-item"><input type="checkbox" id="inc_basic" checked><label for="inc_basic">基本情報（志望校・受験タイプ・学年）</label></div>
       <div class="check-item"><input type="checkbox" id="inc_schedule" checked><label for="inc_schedule">受験日程・イベント</label></div>
       <div class="check-item"><input type="checkbox" id="inc_tests" checked><label for="inc_tests">テスト結果一覧</label></div>
       <div class="check-item"><input type="checkbox" id="inc_works" checked><label for="inc_works">登録ワーク一覧</label></div>
@@ -414,9 +436,7 @@ textarea { resize: vertical; min-height: 80px; }
   <div id="karteOutput" style="display:none;margin-top:16px;">
     <div class="card">
       <div class="card-title"><span class="icon">📋</span>生成された学習カルテ</div>
-      <div class="karte-box">
-        <pre class="karte-text" id="karteText"></pre>
-      </div>
+      <div class="karte-box"><pre class="karte-text" id="karteText"></pre></div>
       <button class="karte-copy-btn" onclick="copyKarte()">📋 カルテをコピーしてきょういちに渡す</button>
     </div>
   </div>
@@ -431,14 +451,45 @@ textarea { resize: vertical; min-height: 80px; }
   <button class="bnav-btn" onclick="showTab('karte')"><span class="ni">✨</span>カルテ</button>
 </nav>
 
+<!-- 子ども管理モーダル -->
+<div class="modal-overlay" id="childModal" onclick="hideChildModal()">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-title">👦 子どもの管理</div>
+    <div id="childModalList"></div>
+    <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border);">
+      <div class="modal-title" style="font-size:14px;">新しい子どもを追加</div>
+      <label>あだ名</label>
+      <input type="text" id="newChildName" placeholder="例：たろう">
+      <label>学年</label>
+      <select id="newChildGrade">
+        <option value="小1">小学1年生</option><option value="小2">小学2年生</option>
+        <option value="小3">小学3年生</option><option value="小4">小学4年生</option>
+        <option value="小5">小学5年生</option><option value="小6">小学6年生</option>
+        <option value="中1">中学1年生</option><option value="中2" selected>中学2年生</option>
+        <option value="中3">中学3年生</option><option value="高1">高校1年生</option>
+        <option value="高2">高校2年生</option><option value="高3">高校3年生</option>
+      </select>
+      <button class="btn btn-primary" style="margin-top:12px;" onclick="addChild()">追加する</button>
+    </div>
+    <button class="btn btn-ghost" style="margin-top:12px;" onclick="hideChildModal()">閉じる</button>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
-var PROMPT = "# きょういちベース 写真読み取りプロンプト\n\n## 指示\n送られた写真を分析して、きょういちベースに貼り付けやすいテキストデータに変換してください。\n\n## 模試の結果票の場合\n---\n【種別】模試\n【模試名】（例：第2回模試）\n【実施日】（例：2025年11月）\n【国語】〇点\n【数学】〇点\n【英語】〇点\n【理科】〇点\n【社会】〇点\n【合計】〇点\n【偏差値】〇〇\n【志望校判定】A/B/C/D/E\n【メモ】気になる情報\n---\n\n## 定期テスト・実力テストの場合\n---\n【種別】定期テスト または 実力テスト\n【テスト名】（例：2学期期末テスト）\n【実施日】（例：2025年12月）\n【国語】〇点\n【数学】〇点\n【英語】〇点\n【理科】〇点\n【社会】〇点\n【合計】〇点\n【学年順位】〇位\n【メモ】気になる情報\n---\n\n## テスト範囲表の場合\n---\n【種別】テスト範囲表\n【テスト名】（例：自己診断テスト）\n【実施日】（例：6月3日）\n【メモ】範囲の要点を教科ごとに箇条書きで簡潔にまとめる。重要ポイントだけ抜粋。\n\n重要：【種別】は必ず「テスト範囲表」と書いてください。「定期テスト」とは絶対に書かないでください。\n---\n\n## スケジュール帳・予定表の場合\n---\n【種別】スケジュール\n【内容】\n・（日付）：（予定）\n---\n\n## ワークの表紙の場合\n---\n【種別】ワーク\n【ワーク名】（例：〇〇社 中学数学ワーク）\n【教科】数学\n【対象学年】中学3年\n【総ページ数】〇ページ\n【出版社】〇〇出版\n---\n\n## 個人情報の処理（必ず守ること）\n- 氏名 → 「●●」に置き換え\n- 学校名・塾名 → 「●●学校」に置き換え\n- 受験番号・生徒番号 → 「削除済み」\n- 住所・電話番号 → 「削除済み」\nマスクした場合は「※個人情報をマスクしました」と添えてください。\n\n## 出力形式について\nテキストデータ部分は必ずコードブロック（\`\`\`）の中に入れて出力してください。コピーしやすくなります。説明文はコードブロックの外に書いてください。\n\n## 出力の注意\n- 読み取れなかった項目は「不明」\n- 複数の写真はそれぞれ分けて出力\n- 余分な説明は省いてシンプルに";
+var PROMPT = "# きょういちベース 写真読み取りプロンプト\n\n## 指示\n送られた写真を分析して、きょういちベースに貼り付けやすいテキストデータに変換してください。\n\n## 模試の結果票の場合\n---\n【種別】模試\n【模試名】（例：第2回模試）\n【実施日】（例：2025年11月）\n【国語】〇点\n【数学】〇点\n【英語】〇点\n【理科】〇点\n【社会】〇点\n【合計】〇点\n【偏差値】〇〇\n【志望校判定】A/B/C/D/E\n【メモ】気になる情報\n---\n\n## 定期テスト・実力テストの場合\n---\n【種別】定期テスト または 実力テスト\n【テスト名】（例：2学期期末テスト）\n【実施日】（例：2025年12月）\n【国語】〇点\n【数学】〇点\n【英語】〇点\n【理科】〇点\n【社会】〇点\n【合計】〇点\n【学年順位】〇位\n【メモ】気になる情報\n---\n\n## テスト範囲表の場合\n---\n【種別】テスト範囲表\n【テスト名】（例：自己診断テスト）\n【実施日】（例：6月3日）\n【メモ】範囲の要点を教科ごとに箇条書きで簡潔にまとめる。重要ポイントだけ抜粋。\n\n重要：【種別】は必ず「テスト範囲表」と書いてください。「定期テスト」とは絶対に書かないでください。\n---\n\n## スケジュール帳・予定表の場合\n---\n【種別】スケジュール\n【内容】\n・（日付）：（予定）\n---\n\n## ワークの表紙の場合\n---\n【種別】ワーク\n【ワーク名】（例：〇〇社 中学数学ワーク）\n【教科】数学\n【対象学年】中学3年\n【総ページ数】〇ページ\n【出版社】〇〇出版\n---\n\n## 個人情報の処理（必ず守ること）\n- 氏名 → 「●●」に置き換え\n- 学校名・塾名 → 「●●学校」に置き換え\n- 受験番号・生徒番号 → 「削除済み」\n- 住所・電話番号 → 「削除済み」\nマスクした場合は「※個人情報をマスクしました」と添えてください。\n\n## 出力形式について\nテキストデータ部分は必ずコードブロック（\`\`\`）の中に入れて出力してください。説明文はコードブロックの外に書いてください。\n\n## 出力の注意\n- 読み取れなかった項目は「不明」\n- 複数の写真はそれぞれ分けて出力\n- 余分な説明は省いてシンプルに";
 
-var state = {
+// =================== データ構造 ===================
+// allData = { children: [{id, name, grade, examType, ...}], currentChildId }
+// 各子どものデータキー: kyoichiChild_{id}
+
+var allData = { children: [], currentChildId: null };
+var currentChild = null;
+
+var CHILD_DATA_TEMPLATE = {
   examType: '高校受験',
-  nickname: '', birthday: '',
+  nickname: '', birthday: '', grade: '中3',
   school1: '', school2: '', school3: '',
   scheduleItems: [
     {label:'私立出願日', date:'', type:'exam'},
@@ -454,14 +505,132 @@ var state = {
   works: []
 };
 
-var calYear, calMonth;
+function loadAllData() {
+  try {
+    var s = localStorage.getItem('kyoichiAll');
+    if (s) allData = JSON.parse(s);
+  } catch(e) {}
+  if (!allData.children || allData.children.length === 0) {
+    var firstId = 'child_' + Date.now();
+    allData.children = [{id: firstId, name: 'お子さん1', grade: '中3'}];
+    allData.currentChildId = firstId;
+    saveAllData();
+  }
+  if (!allData.currentChildId) allData.currentChildId = allData.children[0].id;
+}
 
-function loadState() {
-  try { var s = localStorage.getItem('kyoichiBase3'); if (s) state = JSON.parse(s); } catch(e) {}
+function saveAllData() {
+  try { localStorage.setItem('kyoichiAll', JSON.stringify(allData)); } catch(e) {}
 }
-function saveState() {
-  try { localStorage.setItem('kyoichiBase3', JSON.stringify(state)); } catch(e) {}
+
+function getChildData(id) {
+  try {
+    var s = localStorage.getItem('kyoichiChild_' + id);
+    if (s) return JSON.parse(s);
+  } catch(e) {}
+  return JSON.parse(JSON.stringify(CHILD_DATA_TEMPLATE));
 }
+
+function saveChildData(id, data) {
+  try { localStorage.setItem('kyoichiChild_' + id, JSON.stringify(data)); } catch(e) {}
+}
+
+function getCurrentData() {
+  return getChildData(allData.currentChildId);
+}
+
+function saveCurrentData(data) {
+  saveChildData(allData.currentChildId, data);
+}
+
+function switchChild(id) {
+  allData.currentChildId = id;
+  saveAllData();
+  currentChild = allData.children.find(function(c){ return c.id === id; });
+  updateChildBar();
+  applyToForm();
+  renderTests();
+  renderWorks();
+  renderGradeFilter();
+  setTimeout(renderGraph, 150);
+}
+
+function updateChildBar() {
+  var sel = document.getElementById('childSelect');
+  sel.innerHTML = allData.children.map(function(c){
+    return '<option value="' + c.id + '"' + (c.id === allData.currentChildId ? ' selected' : '') + '>' + c.name + '</option>';
+  }).join('');
+  currentChild = allData.children.find(function(c){ return c.id === allData.currentChildId; });
+  document.getElementById('childGradeTag').textContent = currentChild ? currentChild.grade : '-';
+}
+
+function showChildModal() {
+  renderChildModalList();
+  document.getElementById('childModal').classList.add('show');
+}
+function hideChildModal() {
+  document.getElementById('childModal').classList.remove('show');
+}
+
+function renderChildModalList() {
+  var el = document.getElementById('childModalList');
+  el.innerHTML = allData.children.map(function(c, i){
+    return '<div class="child-list-item">' +
+      '<div class="child-avatar">👦</div>' +
+      '<div class="child-list-info"><div class="child-list-name">' + c.name + '</div><div class="child-list-grade">' + c.grade + '</div></div>' +
+      '<button class="grade-up-btn" onclick="gradeUp(\'' + c.id + '\')">進級↑</button>' +
+      (allData.children.length > 1 ? '<button onclick="removeChild(\'' + c.id + '\')" style="background:none;border:none;color:var(--text-muted);font-size:18px;cursor:pointer;">✕</button>' : '') +
+      '</div>';
+  }).join('');
+}
+
+function addChild() {
+  var name = document.getElementById('newChildName').value.trim();
+  if (!name) { toast('あだ名を入力してください'); return; }
+  var grade = document.getElementById('newChildGrade').value;
+  var id = 'child_' + Date.now();
+  allData.children.push({id: id, name: name, grade: grade});
+  saveAllData();
+  updateChildBar();
+  renderChildModalList();
+  document.getElementById('newChildName').value = '';
+  toast('✅ ' + name + 'を追加しました！');
+}
+
+function removeChild(id) {
+  if (!confirm('この子のデータを削除しますか？')) return;
+  allData.children = allData.children.filter(function(c){ return c.id !== id; });
+  localStorage.removeItem('kyoichiChild_' + id);
+  if (allData.currentChildId === id) allData.currentChildId = allData.children[0].id;
+  saveAllData();
+  updateChildBar();
+  renderChildModalList();
+  switchChild(allData.currentChildId);
+  toast('削除しました');
+}
+
+var GRADES = ['小1','小2','小3','小4','小5','小6','中1','中2','中3','高1','高2','高3'];
+function gradeUp(id) {
+  var child = allData.children.find(function(c){ return c.id === id; });
+  if (!child) return;
+  var idx = GRADES.indexOf(child.grade);
+  if (idx < GRADES.length - 1) {
+    child.grade = GRADES[idx + 1];
+    // 子どものデータの学年も更新
+    var data = getChildData(id);
+    data.grade = child.grade;
+    saveChildData(id, data);
+    saveAllData();
+    updateChildBar();
+    renderChildModalList();
+    if (id === allData.currentChildId) applyToForm();
+    toast('✅ ' + child.name + 'を' + child.grade + 'に進級しました！');
+  } else {
+    toast('これ以上進級できません');
+  }
+}
+
+// =================== ユーティリティ ===================
 function toast(msg) {
   var t = document.getElementById('toast');
   t.textContent = msg; t.className = 'toast show';
@@ -475,8 +644,7 @@ function copyText(text, msg) {
 function fallback(text, msg) {
   var ta = document.createElement('textarea');
   ta.value = text; ta.style.cssText = 'position:fixed;left:-9999px;top:0;';
-  document.body.appendChild(ta);
-  ta.focus(); ta.select(); ta.setSelectionRange(0, 999999);
+  document.body.appendChild(ta); ta.focus(); ta.select(); ta.setSelectionRange(0, 999999);
   try { document.execCommand('copy'); toast(msg); } catch(e) { toast('コピーできませんでした'); }
   document.body.removeChild(ta);
 }
@@ -488,10 +656,7 @@ function showTab(name) {
   document.getElementById('tab-' + name).classList.add('active');
   var tabs = ['prompt','basic','calendar','tests','works','karte'];
   var i = tabs.indexOf(name);
-  if (i >= 0) {
-    document.querySelectorAll('.nav-btn')[i].classList.add('active');
-    document.querySelectorAll('.bnav-btn')[i].classList.add('active');
-  }
+  if (i >= 0) { document.querySelectorAll('.nav-btn')[i].classList.add('active'); document.querySelectorAll('.bnav-btn')[i].classList.add('active'); }
   if (name === 'calendar') renderCalendar();
   if (name === 'tests') setTimeout(renderGraph, 150);
 }
@@ -508,495 +673,462 @@ function expandPrompt() {
   document.getElementById('promptTextarea').style.height = promptExpanded ? '400px' : '130px';
 }
 
+// =================== ペースト取り込み ===================
 function parsePaste() {
   var text = document.getElementById('gptPaste').value.trim();
   if (!text) { toast('テキストを貼り付けてください'); return; }
-  // コードブロックを抽出
   var codeBlocks = text.match(/```[\s\S]*?```/g);
   var parseText = text;
-  if (codeBlocks) {
-    parseText = codeBlocks.map(function(b){ return b.replace(/```\w*\n?/g,'').replace(/```$/,''); }).join('\n---\n');
-  }
+  if (codeBlocks) parseText = codeBlocks.map(function(b){ return b.replace(/```\w*\n?/g,'').replace(/```$/,''); }).join('\n---\n');
   var sections = parseText.split(/\n?---+\n?/).filter(function(s){ return s.trim(); });
+  var data = getCurrentData();
   var added = 0;
   sections.forEach(function(sec) {
-    var get = function(key) {
-      var m = sec.match(new RegExp('【' + key + '】([^\n]+)'));
-      return m ? m[1].trim() : '';
-    };
-    var getMemo = function() {
-      var m = sec.match(/【メモ】([\s\S]+?)(?=\n【|$)/);
-      return m ? m[1].trim() : '';
-    };
+    var get = function(key) { var m = sec.match(new RegExp('【' + key + '】([^\n]+')); return m ? m[1].trim() : ''; };
+    var getMemo = function() { var m = sec.match(/【メモ】([\s\S]+?)(?=\n【|$)/); return m ? m[1].trim() : ''; };
     var type = get('種別');
     if (type === '模試' || type === '定期テスト' || type === '実力テスト' || type === 'テスト範囲表') {
-      state.testResults.unshift({
-        id: Date.now() + Math.random(), type: type,
-        name: get('模試名') || get('テスト名') || type,
-        date: get('実施日'),
+      data.testResults.unshift({ id: Date.now()+Math.random(), type: type, grade: currentChild ? currentChild.grade : '',
+        name: get('模試名')||get('テスト名')||type, date: get('実施日'),
         kokugo: get('国語').replace('点',''), sugaku: get('数学').replace('点',''),
         eigo: get('英語').replace('点',''), rika: get('理科').replace('点',''),
         shakai: get('社会').replace('点',''), sansu: get('算数').replace('点',''),
         total: get('合計').replace('点',''), deviation: get('偏差値'),
-        rank: get('学年順位').replace('位',''), judge: get('志望校判定'),
-        memo: getMemo()
+        rank: get('学年順位').replace('位',''), judge: get('志望校判定'), memo: getMemo()
       });
       added++;
     }
     if (type === 'ワーク') {
       var wn = get('ワーク名');
-      if (wn) { state.works.push({ id: Date.now()+Math.random(), name: wn, subject: get('教科'), pages: get('総ページ数').replace('ページ',''), publisher: get('出版社') }); added++; }
+      if (wn) { data.works.push({id:Date.now()+Math.random(), name:wn, subject:get('教科'), pages:get('総ページ数').replace('ページ',''), publisher:get('出版社')}); added++; }
     }
     if (type === 'スケジュール') {
-      state.parentNote = (state.parentNote ? state.parentNote + '\n\n' : '') + '【スケジュール情報】\n' + sec.replace(/【種別】スケジュール\n?/,'').replace('【内容】\n','');
+      data.parentNote = (data.parentNote ? data.parentNote+'\n\n' : '')+'【スケジュール情報】\n'+sec.replace(/【種別】スケジュール\n?/,'').replace('【内容】\n','');
       added++;
     }
   });
   if (added > 0) {
-    saveState(); renderTests(); renderWorks(); applyToForm();
+    saveCurrentData(data); renderTests(); renderWorks(); renderGradeFilter(); setTimeout(renderGraph,150);
     document.getElementById('gptPaste').value = '';
     toast('✅ ' + added + '件取り込みました！');
-  } else { toast('データを読み取れませんでした。形式を確認してください'); }
+  } else { toast('データを読み取れませんでした'); }
 }
 
-// 基本情報
+// =================== 基本情報 ===================
 function selExamType(btn, type) {
   document.querySelectorAll('#tab-basic .exam-type-btn').forEach(function(b){ b.classList.remove('selected'); });
-  btn.classList.add('selected'); state.examType = type;
+  btn.classList.add('selected');
 }
-
-function renderScheduleItems() {
-  var c = document.getElementById('scheduleItems');
-  c.innerHTML = state.scheduleItems.map(function(item, i){
-    return '<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">' +
-      '<input type="text" value="' + (item.label||'') + '" placeholder="名称（例：私立受験日）" onchange="updSI(' + i + ',\'label\',this.value)" style="flex:1.2;padding:10px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit;background:var(--bg);">' +
-      '<input type="date" value="' + (item.date||'') + '" onchange="updSI(' + i + ',\'date\',this.value)" style="flex:1;padding:10px 8px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit;background:var(--bg);">' +
-      '<button onclick="rmSI(' + i + ')" style="background:none;border:none;color:var(--text-muted);font-size:20px;cursor:pointer;flex-shrink:0;">✕</button>' +
-      '</div>';
-  }).join('');
-}
-function addScheduleItem() {
-  state.scheduleItems.push({label:'', date:'', type:'other'});
-  renderScheduleItems(); saveState();
-}
-function updSI(i, k, v) { state.scheduleItems[i][k] = v; saveState(); }
-function rmSI(i) { state.scheduleItems.splice(i, 1); renderScheduleItems(); saveState(); }
 
 function saveBasic() {
-  state.nickname = document.getElementById('nickname').value;
-  state.birthday = document.getElementById('birthday').value;
-  state.school1 = document.getElementById('school1').value;
-  state.school2 = document.getElementById('school2').value;
-  state.school3 = document.getElementById('school3').value;
-  state.parentNote = document.getElementById('parentNote').value;
-  saveState(); toast('✅ 基本情報を保存しました！');
+  var data = getCurrentData();
+  data.nickname = document.getElementById('nickname').value;
+  data.birthday = document.getElementById('birthday').value;
+  data.grade = document.getElementById('grade').value;
+  data.school1 = document.getElementById('school1').value;
+  data.school2 = document.getElementById('school2').value;
+  data.school3 = document.getElementById('school3').value;
+  data.parentNote = document.getElementById('parentNote').value;
+  data.examType = document.querySelector('#tab-basic .exam-type-btn.selected') ? document.querySelector('#tab-basic .exam-type-btn.selected').textContent : '高校受験';
+  // 学年・名前をchildにも反映
+  if (currentChild) {
+    currentChild.grade = data.grade;
+    if (data.nickname) currentChild.name = data.nickname;
+    saveAllData();
+    updateChildBar();
+  }
+  saveCurrentData(data);
+  toast('✅ 基本情報を保存しました！');
 }
 
 function applyToForm() {
-  var set = function(id, val){ var el = document.getElementById(id); if(el) el.value = val||''; };
-  set('nickname', state.nickname); set('birthday', state.birthday);
-  set('school1', state.school1); set('school2', state.school2); set('school3', state.school3);
-  set('parentNote', state.parentNote);
+  var data = getCurrentData();
+  var set = function(id, val){ var el=document.getElementById(id); if(el) el.value=val||''; };
+  set('nickname', data.nickname); set('birthday', data.birthday);
+  set('grade', data.grade||'中3');
+  set('school1', data.school1); set('school2', data.school2); set('school3', data.school3);
+  set('parentNote', data.parentNote);
   document.querySelectorAll('#tab-basic .exam-type-btn').forEach(function(b){
-    b.classList.toggle('selected', b.textContent === state.examType);
+    b.classList.toggle('selected', b.textContent === (data.examType||'高校受験'));
   });
-  renderScheduleItems();
+  renderScheduleItems(data);
 }
 
-// カレンダー
-function initCal() {
-  var now = new Date();
-  calYear = now.getFullYear(); calMonth = now.getMonth();
+function renderScheduleItems(data) {
+  if (!data) data = getCurrentData();
+  var c = document.getElementById('scheduleItems');
+  if (!data.scheduleItems || !data.scheduleItems.length) { c.innerHTML = ''; return; }
+  c.innerHTML = data.scheduleItems.map(function(item, i){
+    return '<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">' +
+      '<input type="text" value="'+(item.label||'')+'" placeholder="名称" onchange="updSI('+i+',\'label\',this.value)" style="flex:1.2;padding:10px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit;background:var(--bg);">' +
+      '<input type="date" value="'+(item.date||'')+'" onchange="updSI('+i+',\'date\',this.value)" style="flex:1;padding:10px 8px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit;background:var(--bg);">' +
+      '<button onclick="rmSI('+i+')" style="background:none;border:none;color:var(--text-muted);font-size:20px;cursor:pointer;flex-shrink:0;">✕</button></div>';
+  }).join('');
 }
+function addScheduleItem() {
+  var data = getCurrentData();
+  data.scheduleItems.push({label:'', date:'', type:'other'});
+  saveCurrentData(data); renderScheduleItems(data);
+}
+function updSI(i, k, v) { var data=getCurrentData(); data.scheduleItems[i][k]=v; saveCurrentData(data); }
+function rmSI(i) { var data=getCurrentData(); data.scheduleItems.splice(i,1); saveCurrentData(data); renderScheduleItems(data); }
+
+// =================== カレンダー ===================
+var calYear, calMonth, calMode = 'this';
+function initCal() { var now=new Date(); calYear=now.getFullYear(); calMonth=now.getMonth(); }
 function calPrev() { calMonth--; if(calMonth<0){calMonth=11;calYear--;} renderCalendar(); }
 function calNext() { calMonth++; if(calMonth>11){calMonth=0;calYear++;} renderCalendar(); }
+function setCalMode(mode) {
+  calMode = mode;
+  document.getElementById('calModeThis').classList.toggle('active', mode==='this');
+  document.getElementById('calModeAll').classList.toggle('active', mode==='all');
+  renderCalendar();
+}
 
 function getEvents() {
   var events = {};
+  var targetChildren = calMode === 'all' ? allData.children : [currentChild];
   function addEv(dateStr, label, cls) {
     if (!dateStr) return;
     var d = dateStr.replace(/\//g,'-');
     if (!events[d]) events[d] = [];
     events[d].push({label:label, cls:cls||''});
   }
-  state.scheduleItems.forEach(function(item){
-    if (!item.date) return;
-    var cls = item.type==='exam' ? 'exam' : item.type==='school' ? 'school' : 'test';
-    addEv(item.date, item.label, cls);
-  });
-  state.testResults.forEach(function(r){
-    if (!r.date) return;
-    var cls = r.type==='模試' ? '' : r.type==='定期テスト'||r.type==='実力テスト'||r.type==='テスト範囲表' ? 'test' : '';
-    addEv(r.date, r.name||r.type, cls);
+  targetChildren.forEach(function(child) {
+    if (!child) return;
+    var data = getChildData(child.id);
+    (data.scheduleItems||[]).forEach(function(item){
+      if (!item.date) return;
+      var cls = item.type==='exam'?'exam':item.type==='school'?'school':'test';
+      addEv(item.date, (calMode==='all'?child.name+':':'')+item.label, cls);
+    });
+    (data.testResults||[]).forEach(function(r){
+      if (!r.date) return;
+      addEv(r.date, (calMode==='all'?child.name+':':'')+(r.name||r.type), 'test');
+    });
   });
   return events;
 }
 
 function renderCalendar() {
-  var months = ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
-  document.getElementById('calMonth').textContent = calYear + '年 ' + months[calMonth];
+  var months=['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
+  document.getElementById('calMonth').textContent = calYear+'年 '+months[calMonth];
   var events = getEvents();
   var today = new Date(); today.setHours(0,0,0,0);
-  var firstDay = new Date(calYear, calMonth, 1).getDay();
-  var daysInMonth = new Date(calYear, calMonth+1, 0).getDate();
-  var days = ['日','月','火','水','木','金','土'];
-  var html = days.map(function(d,i){ return '<div class="cal-header' + (i===0?' sun':i===6?' sat':'') + '">' + d + '</div>'; }).join('');
-  for (var i=0; i<firstDay; i++) html += '<div class="cal-day empty"></div>';
-  for (var d=1; d<=daysInMonth; d++) {
-    var dt = new Date(calYear, calMonth, d);
-    var dow = dt.getDay();
-    var cls = 'cal-day' + (dow===0?' sun':dow===6?' sat':'');
-    if (dt.getTime()===today.getTime()) cls += ' today';
-    var key = calYear + '-' + String(calMonth+1).padStart(2,'0') + '-' + String(d).padStart(2,'0');
-    var evHtml = '';
-    if (events[key]) {
-      events[key].slice(0,2).forEach(function(ev){
-        evHtml += '<div class="cal-event ' + ev.cls + '">' + ev.label.substring(0,6) + '</div>';
-      });
-      if (events[key].length > 2) evHtml += '<div style="font-size:9px;color:var(--text-muted);">+' + (events[key].length-2) + '</div>';
+  var firstDay = new Date(calYear,calMonth,1).getDay();
+  var daysInMonth = new Date(calYear,calMonth+1,0).getDate();
+  var days=['日','月','火','水','木','金','土'];
+  var html = days.map(function(d,i){ return '<div class="cal-header'+(i===0?' sun':i===6?' sat':'')+'">'+ d+'</div>'; }).join('');
+  for(var i=0;i<firstDay;i++) html+='<div class="cal-day empty"></div>';
+  for(var d=1;d<=daysInMonth;d++) {
+    var dt=new Date(calYear,calMonth,d); var dow=dt.getDay();
+    var cls='cal-day'+(dow===0?' sun':dow===6?' sat':'');
+    if(dt.getTime()===today.getTime()) cls+=' today';
+    var key=calYear+'-'+String(calMonth+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');
+    var evHtml='';
+    if(events[key]){
+      events[key].slice(0,2).forEach(function(ev){ evHtml+='<div class="cal-event '+ev.cls+'">'+ev.label.substring(0,6)+'</div>'; });
+      if(events[key].length>2) evHtml+='<div style="font-size:9px;color:var(--text-muted);">+'+(events[key].length-2)+'</div>';
     }
-    html += '<div class="' + cls + '"><div class="cal-day-num">' + d + '</div>' + evHtml + '</div>';
+    html+='<div class="'+cls+'"><div class="cal-day-num">'+d+'</div>'+evHtml+'</div>';
   }
   document.getElementById('calGrid').innerHTML = html;
-
-  // スケジュールリスト
-  var allEvents = [];
-  var todayStr = today.toISOString().split('T')[0];
+  var allEvents=[]; var todayStr=today.toISOString().split('T')[0];
   Object.keys(events).sort().forEach(function(k){
-    if (k >= todayStr) {
-      events[k].forEach(function(ev){ allEvents.push({date:k, label:ev.label, cls:ev.cls}); });
-    }
+    if(k>=todayStr) events[k].forEach(function(ev){ allEvents.push({date:k,label:ev.label,cls:ev.cls}); });
   });
-  var listEl = document.getElementById('scheduleList');
-  if (!allEvents.length) { listEl.innerHTML = '<div class="empty-state"><div class="empty-icon">📅</div>今後の予定はありません</div>'; return; }
-  listEl.innerHTML = allEvents.slice(0,20).map(function(ev){
-    var col = ev.cls==='exam' ? '#E53E3E' : ev.cls==='test' ? 'var(--purple)' : ev.cls==='school' ? 'var(--accent-dark)' : 'var(--primary)';
-    return '<div class="schedule-item"><div class="schedule-dot" style="background:' + col + ';"></div><div class="schedule-date">' + ev.date + '</div><div class="schedule-name">' + ev.label + '</div></div>';
+  var listEl=document.getElementById('scheduleList');
+  if(!allEvents.length){listEl.innerHTML='<div class="empty-state"><div class="empty-icon">📅</div>今後の予定はありません</div>';return;}
+  listEl.innerHTML=allEvents.slice(0,20).map(function(ev){
+    var col=ev.cls==='exam'?'#E53E3E':ev.cls==='test'?'var(--purple)':ev.cls==='school'?'var(--accent-dark)':'var(--primary)';
+    return '<div class="schedule-item"><div class="schedule-dot" style="background:'+col+';"></div><div class="schedule-date">'+ev.date+'</div><div class="schedule-name">'+ev.label+'</div></div>';
   }).join('');
 }
 
-// グラフ
-var graphFilter = '全て';
-var SUBJECT_COLORS = {
-  '国語': '#FF8C69', '数学': '#4ECDC4', '英語': '#9F7AEA',
-  '理科': '#68D391', '社会': '#F6AD55', '算数': '#FC8181'
-};
-var SUBJECTS = [{k:'kokugo',l:'国語'},{k:'sugaku',l:'数学'},{k:'eigo',l:'英語'},{k:'rika',l:'理科'},{k:'shakai',l:'社会'},{k:'sansu',l:'算数'}];
+// =================== テスト ===================
+var currentTestType = '模試';
+function selTestType(btn, type) {
+  document.querySelectorAll('#testTypeRow .exam-type-btn').forEach(function(b){ b.classList.remove('selected'); });
+  btn.classList.add('selected'); currentTestType = type;
+  document.getElementById('scoreFields').style.display = type==='テスト範囲表'?'none':'block';
+}
+
+function calcTotal() {
+  var subs = ['s_kokugo','s_sugaku','s_eigo','s_rika','s_shakai','s_sansu'];
+  var total = 0; var hasAny = false;
+  subs.forEach(function(id){ var v=Number(document.getElementById(id).value); if(v){ total+=v; hasAny=true; } });
+  var el = document.getElementById('autoTotal');
+  if(hasAny){ el.style.display='block'; document.getElementById('autoTotalNum').textContent=total+'点'; }
+  else { el.style.display='none'; }
+}
+
+function addTest() {
+  var name = document.getElementById('tName').value.trim();
+  if(!name){toast('テスト名を入力してください');return;}
+  var data = getCurrentData();
+  var autoSum = 0; var hasSub = false;
+  ['s_kokugo','s_sugaku','s_eigo','s_rika','s_shakai','s_sansu'].forEach(function(id){ var v=Number(document.getElementById(id).value); if(v){autoSum+=v;hasSub=true;} });
+  var manualTotal = document.getElementById('tTotal').value;
+  var finalTotal = manualTotal || (hasSub ? String(autoSum) : '');
+  data.testResults.unshift({
+    id: Date.now(), type: currentTestType, grade: currentChild ? currentChild.grade : '',
+    name: name, date: document.getElementById('tDate').value,
+    kokugo: document.getElementById('s_kokugo').value, sugaku: document.getElementById('s_sugaku').value,
+    eigo: document.getElementById('s_eigo').value, rika: document.getElementById('s_rika').value,
+    shakai: document.getElementById('s_shakai').value, sansu: document.getElementById('s_sansu').value,
+    total: finalTotal, deviation: document.getElementById('tDeviation').value,
+    rank: document.getElementById('tRank').value, judge: document.getElementById('tJudge').value,
+    memo: document.getElementById('tMemo').value
+  });
+  saveCurrentData(data); renderTests(); renderGradeFilter(); renderGraph();
+  ['tName','tDate','s_kokugo','s_sugaku','s_eigo','s_rika','s_shakai','s_sansu','tTotal','tDeviation','tRank','tJudge','tMemo'].forEach(function(id){ document.getElementById(id).value=''; });
+  document.getElementById('autoTotal').style.display='none';
+  toast('✅ 追加しました！');
+}
+
+function renderTests() {
+  var data = getCurrentData();
+  var c = document.getElementById('testList');
+  if(!data.testResults||!data.testResults.length){c.innerHTML='<div class="empty-state"><div class="empty-icon">📊</div>まだありません</div>';return;}
+  var subs=[{k:'kokugo',l:'国語'},{k:'sugaku',l:'数学'},{k:'eigo',l:'英語'},{k:'rika',l:'理科'},{k:'shakai',l:'社会'},{k:'sansu',l:'算数'}];
+  var bc={'模試':'','定期テスト':'teiki','実力テスト':'jitsuryoku','テスト範囲表':'range'};
+  c.innerHTML = data.testResults.map(function(r,i){
+    var scores=subs.filter(function(s){return r[s.k];}).map(function(s){ return '<span style="margin-right:8px;font-size:13px;"><b style="color:var(--text-muted);font-size:10px;">'+s.l+'</b> <b>'+r[s.k]+'</b>点</span>'; }).join('');
+    var extras=[r.total?'合計:'+r.total+'点':'',r.deviation?'偏差値:'+r.deviation:'',r.rank?'学年'+r.rank+'位':'',r.judge?r.judge:''].filter(Boolean).join(' ');
+    return '<div class="test-item"><div class="test-item-header"><div><span class="test-badge '+(bc[r.type]||'')+'">'+r.type+'</span>'+(r.grade?'<span class="grade-tag">'+r.grade+'</span>':'')+' <b style="font-size:13px;">'+r.name+'</b></div><button class="del-btn" onclick="delTest('+i+')">✕</button></div>'+
+      (r.date?'<div style="font-size:11px;color:var(--text-muted);margin-bottom:8px;">📅 '+r.date+'</div>':'')+
+      (scores?'<div style="flex-wrap:wrap;display:flex;">'+scores+'</div>':'')+
+      (extras?'<div style="font-size:12px;color:var(--text-light);margin-top:4px;">'+extras+'</div>':'')+
+      (r.memo?'<div style="font-size:12px;color:var(--text-muted);margin-top:4px;font-style:italic;white-space:pre-wrap;">💭 '+r.memo+'</div>':'')+
+      '</div>';
+  }).join('');
+}
+function delTest(i){ if(!confirm('削除しますか？'))return; var data=getCurrentData(); data.testResults.splice(i,1); saveCurrentData(data); renderTests(); renderGradeFilter(); renderGraph(); toast('削除しました'); }
+
+// =================== グラフ ===================
+var graphFilter='全て', gradeFilter='全て';
+var SUBJECT_COLORS={'国語':'#FF8C69','数学':'#4ECDC4','英語':'#9F7AEA','理科':'#68D391','社会':'#F6AD55','算数':'#FC8181'};
+var SUBJECTS=[{k:'kokugo',l:'国語'},{k:'sugaku',l:'数学'},{k:'eigo',l:'英語'},{k:'rika',l:'理科'},{k:'shakai',l:'社会'},{k:'sansu',l:'算数'}];
 
 function setGraphFilter(type, btn) {
-  graphFilter = type;
-  document.querySelectorAll('.graph-filter-btn').forEach(function(b){ b.classList.remove('active'); });
-  btn.classList.add('active');
-  renderGraph();
+  graphFilter=type;
+  document.querySelectorAll('.graph-filter-btn').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active'); renderGraph();
+}
+
+function renderGradeFilter() {
+  var data = getCurrentData();
+  var grades = [];
+  (data.testResults||[]).forEach(function(r){ if(r.grade && grades.indexOf(r.grade)<0) grades.push(r.grade); });
+  var el = document.getElementById('gradeFilter');
+  if(grades.length<=1){el.innerHTML='';return;}
+  el.innerHTML = ['全て'].concat(grades).map(function(g){
+    return '<button class="grade-filter-btn'+(g===gradeFilter?' active':'')+'" onclick="setGradeFilter(\''+g+'\',this)">'+g+'</button>';
+  }).join('');
+}
+
+function setGradeFilter(grade, btn) {
+  gradeFilter=grade;
+  document.querySelectorAll('.grade-filter-btn').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active'); renderGraph();
 }
 
 function renderGraph() {
-  var canvas = document.getElementById('scoreChart');
-  if (!canvas) return;
-  var ctx = canvas.getContext('2d');
+  var canvas=document.getElementById('scoreChart');
+  if(!canvas)return;
+  var ctx=canvas.getContext('2d');
+  var data=getCurrentData();
+  var filtered=(data.testResults||[]).filter(function(r){
+    if(r.type==='テスト範囲表')return false;
+    if(graphFilter!=='全て'&&r.type!==graphFilter)return false;
+    if(gradeFilter!=='全て'&&r.grade!==gradeFilter)return false;
+    return true;
+  }).slice().reverse();
 
-  var filtered = state.testResults.filter(function(r){
-    if (r.type === 'テスト範囲表') return false;
-    if (graphFilter === '全て') return true;
-    return r.type === graphFilter;
-  }).slice().reverse(); // 古い順
+  var W=(canvas.parentElement.offsetWidth>0?canvas.parentElement.offsetWidth:340)-8;
+  canvas.width=Math.max(W,filtered.length*60+80); canvas.height=220;
+  var w=canvas.width,h=canvas.height,padL=40,padR=20,padT=20,padB=50;
+  var gw=w-padL-padR,gh=h-padT-padB;
+  ctx.clearRect(0,0,w,h);
 
-  if (!filtered.length) {
-    canvas.width = canvas.offsetWidth || 300;
-    canvas.height = 220;
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = '#BBA99F';
-    ctx.font = '13px sans-serif';
-    ctx.textAlign = 'center';
-    ctx.fillText('データがありません', canvas.width/2, 110);
-    document.getElementById('graphLegend').innerHTML = '';
-    return;
+  if(!filtered.length){
+    ctx.fillStyle='#BBA99F';ctx.font='13px sans-serif';ctx.textAlign='center';
+    ctx.fillText('データがありません',w/2,110);
+    document.getElementById('graphLegend').innerHTML='';return;
   }
 
-  var W = (canvas.parentElement.offsetWidth > 0 ? canvas.parentElement.offsetWidth : 340) - 8;
-  canvas.width = Math.max(W, filtered.length * 60 + 80);
-  canvas.height = 220;
-  var w = canvas.width, h = canvas.height;
-  var padL = 40, padR = 20, padT = 20, padB = 50;
-  var gw = w - padL - padR;
-  var gh = h - padT - padB;
-
-  ctx.clearRect(0, 0, w, h);
-
-  // 背景グリッド
-  ctx.strokeStyle = '#F0E0D8';
-  ctx.lineWidth = 1;
-  var ySteps = [0,20,40,60,80,100];
-  ySteps.forEach(function(v){
-    var y = padT + gh - (v/100)*gh;
-    ctx.beginPath(); ctx.moveTo(padL, y); ctx.lineTo(padL+gw, y); ctx.stroke();
-    ctx.fillStyle = '#BBA99F'; ctx.font = '10px sans-serif'; ctx.textAlign = 'right';
-    ctx.fillText(v, padL-4, y+4);
+  ctx.strokeStyle='#F0E0D8';ctx.lineWidth=1;
+  [0,20,40,60,80,100].forEach(function(v){
+    var y=padT+gh-(v/100)*gh;
+    ctx.beginPath();ctx.moveTo(padL,y);ctx.lineTo(padL+gw,y);ctx.stroke();
+    ctx.fillStyle='#BBA99F';ctx.font='10px sans-serif';ctx.textAlign='right';
+    ctx.fillText(v,padL-4,y+4);
   });
 
-  // X軸ラベル
-  var xStep = gw / Math.max(filtered.length - 1, 1);
-  filtered.forEach(function(r, i){
-    var x = padL + (filtered.length===1 ? gw/2 : i*xStep);
-    ctx.fillStyle = '#8B6B5E'; ctx.font = '10px sans-serif'; ctx.textAlign = 'center';
-    var label = (r.name||r.type).substring(0,6);
-    ctx.fillText(label, x, h - padB + 14);
-    if (r.date) ctx.fillText(r.date.substring(5), x, h - padB + 26);
+  var xStep=gw/Math.max(filtered.length-1,1);
+  filtered.forEach(function(r,i){
+    var x=padL+(filtered.length===1?gw/2:i*xStep);
+    ctx.fillStyle='#8B6B5E';ctx.font='10px sans-serif';ctx.textAlign='center';
+    ctx.fillText((r.name||r.type).substring(0,6),x,h-padB+14);
+    if(r.date)ctx.fillText(r.date.substring(5),x,h-padB+26);
   });
 
-  // 各教科のラインを描画
-  var usedSubjects = [];
+  var usedSubjects=[];
   SUBJECTS.forEach(function(s){
-    var hasData = filtered.some(function(r){ return r[s.k] && !isNaN(Number(r[s.k])); });
-    if (!hasData) return;
+    var hasData=filtered.some(function(r){return r[s.k]&&!isNaN(Number(r[s.k]));});
+    if(!hasData)return;
     usedSubjects.push(s);
-    var color = SUBJECT_COLORS[s.l] || '#999';
-
-    ctx.beginPath();
-    ctx.strokeStyle = color;
-    ctx.lineWidth = 2.5;
-    ctx.lineJoin = 'round';
-
-    var started = false;
-    filtered.forEach(function(r, i){
-      var val = Number(r[s.k]);
-      if (!r[s.k] || isNaN(val)) return;
-      // 100点満点に正規化（合計点対応）
-      var maxScore = 100;
-      var pct = Math.min(val / maxScore, 1);
-      var x = padL + (filtered.length===1 ? gw/2 : i*xStep);
-      var y = padT + gh - pct*gh;
-      if (!started) { ctx.moveTo(x, y); started = true; }
-      else { ctx.lineTo(x, y); }
+    var color=SUBJECT_COLORS[s.l]||'#999';
+    ctx.beginPath();ctx.strokeStyle=color;ctx.lineWidth=2.5;ctx.lineJoin='round';
+    var started=false;
+    filtered.forEach(function(r,i){
+      var val=Number(r[s.k]);if(!r[s.k]||isNaN(val))return;
+      var pct=Math.min(val/100,1);
+      var x=padL+(filtered.length===1?gw/2:i*xStep);
+      var y=padT+gh-pct*gh;
+      if(!started){ctx.moveTo(x,y);started=true;}else{ctx.lineTo(x,y);}
     });
     ctx.stroke();
-
-    // ドット＋数値
-    filtered.forEach(function(r, i){
-      var val = Number(r[s.k]);
-      if (!r[s.k] || isNaN(val)) return;
-      var pct = Math.min(val / 100, 1);
-      var x = padL + (filtered.length===1 ? gw/2 : i*xStep);
-      var y = padT + gh - pct*gh;
-      ctx.beginPath();
-      ctx.arc(x, y, 5, 0, Math.PI*2);
-      ctx.fillStyle = color; ctx.fill();
-      ctx.strokeStyle = 'white'; ctx.lineWidth = 1.5; ctx.stroke();
-      ctx.fillStyle = color; ctx.font = 'bold 10px sans-serif'; ctx.textAlign = 'center';
-      ctx.fillText(val, x, y-9);
+    filtered.forEach(function(r,i){
+      var val=Number(r[s.k]);if(!r[s.k]||isNaN(val))return;
+      var pct=Math.min(val/100,1);
+      var x=padL+(filtered.length===1?gw/2:i*xStep);
+      var y=padT+gh-pct*gh;
+      ctx.beginPath();ctx.arc(x,y,5,0,Math.PI*2);ctx.fillStyle=color;ctx.fill();
+      ctx.strokeStyle='white';ctx.lineWidth=1.5;ctx.stroke();
+      ctx.fillStyle=color;ctx.font='bold 10px sans-serif';ctx.textAlign='center';
+      ctx.fillText(val,x,y-9);
     });
   });
-
-  // 凡例
-  var legendEl = document.getElementById('graphLegend');
-  legendEl.innerHTML = usedSubjects.map(function(s){
+  document.getElementById('graphLegend').innerHTML=usedSubjects.map(function(s){
     return '<div class="graph-legend-item"><div class="graph-legend-dot" style="background:'+SUBJECT_COLORS[s.l]+';"></div>'+s.l+'</div>';
   }).join('');
 }
 
 function copyGraphText() {
-  var filtered = state.testResults.filter(function(r){
-    if (r.type === 'テスト範囲表') return false;
-    if (graphFilter === '全て') return true;
-    return r.type === graphFilter;
+  var data=getCurrentData();
+  var filtered=(data.testResults||[]).filter(function(r){
+    if(r.type==='テスト範囲表')return false;
+    if(graphFilter!=='全て'&&r.type!==graphFilter)return false;
+    if(gradeFilter!=='全て'&&r.grade!==gradeFilter)return false;
+    return true;
   }).slice().reverse();
-
-  if (!filtered.length) { toast('データがありません'); return; }
-
-  var text = '【教科別点数データ（' + graphFilter + '）】\n\n';
-  text += 'テスト名\t国語\t数学\t英語\t理科\t社会\t算数\t合計\t偏差値\n';
+  if(!filtered.length){toast('データがありません');return;}
+  var text='【教科別点数データ（'+graphFilter+'/'+(gradeFilter==='全て'?'全学年':gradeFilter)+'）】\n\n';
+  text+='テスト名\t国語\t数学\t英語\t理科\t社会\t算数\t合計\t偏差値\n';
   filtered.forEach(function(r){
-    text += (r.name||r.type) + (r.date?'('+r.date+')':'') + '	';
-    text += (r.kokugo||'-') + '\t' + (r.sugaku||'-') + '\t' + (r.eigo||'-') + '\t';
-    text += (r.rika||'-') + '\t' + (r.shakai||'-') + '\t' + (r.sansu||'-') + '\t';
-    text += (r.total||'-') + '\t' + (r.deviation||'-') + '\n';
+    text+=(r.name||r.type)+(r.date?'('+r.date+')':'')+(r.grade?'['+r.grade+']':'')+'\t';
+    text+=(r.kokugo||'-')+'\t'+(r.sugaku||'-')+'\t'+(r.eigo||'-')+'\t';
+    text+=(r.rika||'-')+'\t'+(r.shakai||'-')+'\t'+(r.sansu||'-')+'\t';
+    text+=(r.total||'-')+'\t'+(r.deviation||'-')+'\n';
   });
-  text += '\n推移の分析と今後のアドバイスをお願いします。';
-  copyText(text, '📊 グラフデータをコピーしました！ChatGPTに貼り付けてね');
+  text+='\n推移の分析と今後のアドバイスをお願いします。';
+  copyText(text,'📊 グラフデータをコピーしました！ChatGPTに貼り付けてね');
 }
 
-// テスト
-var currentTestType = '模試';
-function selTestType(btn, type) {
-  document.querySelectorAll('#testTypeRow .exam-type-btn').forEach(function(b){ b.classList.remove('selected'); });
-  btn.classList.add('selected'); currentTestType = type;
-  document.getElementById('scoreFields').style.display = type==='テスト範囲表' ? 'none' : 'block';
-}
-
-function addTest() {
-  var name = document.getElementById('tName').value.trim();
-  if (!name) { toast('テスト名を入力してください'); return; }
-  state.testResults.unshift({
-    id: Date.now(), type: currentTestType, name: name,
-    date: document.getElementById('tDate').value,
-    kokugo: document.getElementById('s_kokugo').value,
-    sugaku: document.getElementById('s_sugaku').value,
-    eigo: document.getElementById('s_eigo').value,
-    rika: document.getElementById('s_rika').value,
-    shakai: document.getElementById('s_shakai').value,
-    sansu: document.getElementById('s_sansu').value,
-    total: document.getElementById('tTotal').value,
-    deviation: document.getElementById('tDeviation').value,
-    rank: document.getElementById('tRank').value,
-    judge: document.getElementById('tJudge').value,
-    memo: document.getElementById('tMemo').value
-  });
-  saveState(); renderTests(); renderGraph();
-  ['tName','tDate','s_kokugo','s_sugaku','s_eigo','s_rika','s_shakai','s_sansu','tTotal','tDeviation','tRank','tJudge','tMemo'].forEach(function(id){ document.getElementById(id).value=''; });
-  toast('✅ 追加しました！');
-}
-
-function renderTests() {
-  var c = document.getElementById('testList');
-  if (!state.testResults.length) { c.innerHTML = '<div class="empty-state"><div class="empty-icon">📊</div>まだありません</div>'; return; }
-  var subs = [{k:'kokugo',l:'国語'},{k:'sugaku',l:'数学'},{k:'eigo',l:'英語'},{k:'rika',l:'理科'},{k:'shakai',l:'社会'},{k:'sansu',l:'算数'}];
-  var bc = {'模試':'','定期テスト':'teiki','実力テスト':'jitsuryoku','テスト範囲表':'range'};
-  c.innerHTML = state.testResults.map(function(r,i){
-    var scores = subs.filter(function(s){ return r[s.k]; }).map(function(s){
-      return '<span style="margin-right:8px;font-size:13px;"><b style="color:var(--text-muted);font-size:10px;">' + s.l + '</b> <b>' + r[s.k] + '</b>点</span>';
-    }).join('');
-    var extras = [r.total?'合計:'+r.total+'点':'',r.deviation?'偏差値:'+r.deviation:'',r.rank?'学年'+r.rank+'位':'',r.judge?r.judge:''].filter(Boolean).join(' ');
-    return '<div class="test-item">' +
-      '<div class="test-item-header"><div><span class="test-badge '+(bc[r.type]||'')+'">'+ r.type+'</span> <b style="font-size:13px;">' + r.name + '</b></div>' +
-      '<button class="del-btn" onclick="delTest('+i+')">✕</button></div>' +
-      (r.date?'<div style="font-size:11px;color:var(--text-muted);margin-bottom:8px;">📅 '+r.date+'</div>':'') +
-      (scores?'<div style="flex-wrap:wrap;display:flex;">'+scores+'</div>':'') +
-      (extras?'<div style="font-size:12px;color:var(--text-light);margin-top:4px;">'+extras+'</div>':'') +
-      (r.memo?'<div style="font-size:12px;color:var(--text-muted);margin-top:4px;font-style:italic;white-space:pre-wrap;">💭 '+r.memo+'</div>':'') +
-      '</div>';
-  }).join('');
-}
-function delTest(i) { if(!confirm('削除しますか？'))return; state.testResults.splice(i,1); saveState(); renderTests(); renderGraph(); toast('削除しました'); }
-
-// ワーク
-var EMOJI = {'国語':'📗','数学':'📘','英語':'📙','理科':'🔬','社会':'🌍','算数':'🔢','その他':'📓'};
-function addWork() {
-  var name = document.getElementById('wName').value.trim();
-  if (!name) { toast('ワーク名を入力してください'); return; }
-  state.works.push({ id: Date.now(), name: name, subject: document.getElementById('wSubject').value, pages: document.getElementById('wPages').value, publisher: document.getElementById('wPublisher').value });
-  saveState(); renderWorks();
-  ['wName','wPages','wPublisher'].forEach(function(id){ document.getElementById(id).value=''; });
+// =================== ワーク ===================
+var EMOJI={'国語':'📗','数学':'📘','英語':'📙','理科':'🔬','社会':'🌍','算数':'🔢','その他':'📓'};
+function addWork(){
+  var name=document.getElementById('wName').value.trim();
+  if(!name){toast('ワーク名を入力してください');return;}
+  var data=getCurrentData();
+  data.works.push({id:Date.now(),name:name,subject:document.getElementById('wSubject').value,pages:document.getElementById('wPages').value,publisher:document.getElementById('wPublisher').value});
+  saveCurrentData(data);renderWorks();
+  ['wName','wPages','wPublisher'].forEach(function(id){document.getElementById(id).value='';});
   toast('✅ ワークを登録しました！');
 }
-function renderWorks() {
-  var c = document.getElementById('workList');
-  if (!state.works.length) { c.innerHTML = '<div class="empty-state"><div class="empty-icon">📚</div>まだありません</div>'; return; }
-  c.innerHTML = state.works.map(function(w,i){
-    return '<div class="work-item">' +
-      '<div class="work-icon">'+(EMOJI[w.subject]||'📓')+'</div>' +
-      '<div class="work-info"><div class="work-name">'+w.name+'</div>' +
-      '<div class="work-sub">'+w.subject+(w.pages?' '+w.pages+'P':'')+(w.publisher?' '+w.publisher:'')+'</div></div>' +
+function renderWorks(){
+  var data=getCurrentData();
+  var c=document.getElementById('workList');
+  if(!data.works||!data.works.length){c.innerHTML='<div class="empty-state"><div class="empty-icon">📚</div>まだありません</div>';return;}
+  c.innerHTML=data.works.map(function(w,i){
+    return '<div class="work-item"><div class="work-icon">'+(EMOJI[w.subject]||'📓')+'</div>'+
+      '<div class="work-info"><div class="work-name">'+w.name+'</div><div class="work-sub">'+w.subject+(w.pages?' '+w.pages+'P':'')+(w.publisher?' '+w.publisher:'')+'</div></div>'+
       '<button class="del-btn" onclick="delWork('+i+')">✕</button></div>';
   }).join('');
 }
-function delWork(i) { if(!confirm('削除しますか？'))return; state.works.splice(i,1); saveState(); renderWorks(); toast('削除しました'); }
+function delWork(i){if(!confirm('削除しますか？'))return;var data=getCurrentData();data.works.splice(i,1);saveCurrentData(data);renderWorks();toast('削除しました');}
 
-// 相談目的
-function togglePurpose(div, label) {
-  var cb = div.querySelector('input[type="checkbox"]');
-  cb.checked = !cb.checked;
-  div.classList.toggle('checked', cb.checked);
-  if (label === 'その他') {
-    document.getElementById('otherPurposeBox').style.display = cb.checked ? 'block' : 'none';
-  }
+// =================== 相談目的 ===================
+function togglePurpose(div){
+  var cb=div.querySelector('input[type="checkbox"]');
+  cb.checked=!cb.checked;div.classList.toggle('checked',cb.checked);
+  var lbl=div.querySelector('label').textContent;
+  if(lbl==='その他') document.getElementById('otherPurposeBox').style.display=cb.checked?'block':'none';
 }
 
-// カルテ生成
-function generateKarte() {
-  var today = new Date().toLocaleDateString('ja-JP', {year:'numeric',month:'long',day:'numeric'});
-  var subs = [{k:'kokugo',l:'国語'},{k:'sugaku',l:'数学'},{k:'eigo',l:'英語'},{k:'rika',l:'理科'},{k:'shakai',l:'社会'},{k:'sansu',l:'算数'}];
-
-  // 相談目的
-  var purposes = [];
+// =================== カルテ生成 ===================
+function generateKarte(){
+  var today=new Date().toLocaleDateString('ja-JP',{year:'numeric',month:'long',day:'numeric'});
+  var data=getCurrentData();
+  var subs=[{k:'kokugo',l:'国語'},{k:'sugaku',l:'数学'},{k:'eigo',l:'英語'},{k:'rika',l:'理科'},{k:'shakai',l:'社会'},{k:'sansu',l:'算数'}];
+  var purposes=[];
   document.querySelectorAll('#purposeList .purpose-item').forEach(function(div){
-    var cb = div.querySelector('input[type="checkbox"]');
-    var lbl = div.querySelector('label').textContent;
-    if (cb.checked) {
-      if (lbl === 'その他') {
-        var other = document.getElementById('otherPurposeText').value.trim();
-        if (other) purposes.push('その他：' + other);
-        else purposes.push('その他');
-      } else { purposes.push(lbl); }
+    var cb=div.querySelector('input[type="checkbox"]');
+    var lbl=div.querySelector('label').textContent;
+    if(cb.checked){
+      if(lbl==='その他'){var ot=document.getElementById('otherPurposeText').value.trim();purposes.push(ot?'その他：'+ot:'その他');}
+      else purposes.push(lbl);
     }
   });
+  var t='きょういちプランナーへ：学習カルテを持ってきたよ！\n';
+  if(purposes.length){t+='\n【今日の相談目的】\n';purposes.forEach(function(p){t+='・'+p+'\n';});}
+  t+='\n════════════════════════════════\n📋 学習カルテ（きょういちベース）\n作成日：'+today+'\n════════════════════════════════\n';
 
-  var t = '';
-  // 冒頭：きょういちへの呼びかけ
-  t += 'きょういちプランナーへ：学習カルテを持ってきたよ！\n';
-  if (purposes.length) {
-    t += '\n【今日の相談目的】\n';
-    purposes.forEach(function(p){ t += '・' + p + '\n'; });
+  if(document.getElementById('inc_basic').checked){
+    if(currentChild) t+='\n【お子さん】\nあだ名：'+(data.nickname||currentChild.name)+'\n学年：'+(currentChild.grade||data.grade||'')+'\n';
+    if(data.birthday) t+='誕生日：'+data.birthday+'\n';
+    t+='\n【受験タイプ】\n'+(data.examType||'高校受験')+'\n';
+    if(data.school1){t+='\n【志望校】\n第1志望：'+data.school1+'\n';if(data.school2)t+='第2志望：'+data.school2+'\n';if(data.school3)t+='第3志望：'+data.school3+'\n';}
   }
-  t += '\n════════════════════════════════\n📋 学習カルテ（きょういちベース）\n作成日：' + today + '\n════════════════════════════════\n';
-
-  if (document.getElementById('inc_basic').checked) {
-    if (state.nickname) t += '\n【お子さんのあだ名】\n' + state.nickname + '\n';
-    if (state.birthday) t += '\n【誕生日】\n' + state.birthday + '\n';
-    t += '\n【受験タイプ】\n' + state.examType + '\n';
-    if (state.school1) {
-      t += '\n【志望校】\n第1志望：' + state.school1 + '\n';
-      if (state.school2) t += '第2志望：' + state.school2 + '\n';
-      if (state.school3) t += '第3志望：' + state.school3 + '\n';
-    }
+  if(document.getElementById('inc_schedule').checked){
+    var dates=(data.scheduleItems||[]).filter(function(s){return s.date;});
+    if(dates.length){t+='\n【受験日程・イベント】\n';dates.forEach(function(s){t+=(s.label||'予定')+'：'+s.date+'\n';});}
   }
-
-  if (document.getElementById('inc_schedule').checked) {
-    var dates = state.scheduleItems.filter(function(s){ return s.date; });
-    if (dates.length) {
-      t += '\n【受験日程・イベント】\n';
-      dates.forEach(function(s){ t += (s.label||'予定') + '：' + s.date + '\n'; });
-    }
-  }
-
-  if (document.getElementById('inc_tests').checked && state.testResults.length) {
-    t += '\n【テスト結果・範囲表（直近' + Math.min(state.testResults.length, 5) + '件）】\n';
-    state.testResults.slice(0, 5).forEach(function(r){
-      t += '\n■ ' + r.type + '：' + r.name + (r.date?'（'+r.date+'）':'') + '\n';
-      if (r.type !== 'テスト範囲表') {
-        var sc = subs.filter(function(s){ return r[s.k]; }).map(function(s){ return s.l+r[s.k]+'点'; }).join('・');
-        if (sc) t += '  ' + sc + '\n';
-        if (r.total) t += '  合計：' + r.total + '点\n';
-        if (r.deviation) t += '  偏差値：' + r.deviation + '\n';
-        if (r.rank) t += '  学年順位：' + r.rank + '位\n';
-        if (r.judge) t += '  判定：' + r.judge + '\n';
+  if(document.getElementById('inc_tests').checked&&data.testResults&&data.testResults.length){
+    t+='\n【テスト結果・範囲表（直近'+Math.min(data.testResults.length,5)+'件）】\n';
+    data.testResults.slice(0,5).forEach(function(r){
+      t+='\n■ '+r.type+'：'+r.name+(r.grade?'['+r.grade+']':'')+(r.date?'（'+r.date+'）':'')+'\n';
+      if(r.type!=='テスト範囲表'){
+        var sc=subs.filter(function(s){return r[s.k];}).map(function(s){return s.l+r[s.k]+'点';}).join('・');
+        if(sc)t+='  '+sc+'\n';
+        if(r.total)t+='  合計：'+r.total+'点\n';
+        if(r.deviation)t+='  偏差値：'+r.deviation+'\n';
+        if(r.rank)t+='  学年順位：'+r.rank+'位\n';
+        if(r.judge)t+='  判定：'+r.judge+'\n';
       }
-      if (r.memo) t += '  メモ：' + r.memo + '\n';
+      if(r.memo)t+='  メモ：'+r.memo+'\n';
     });
   }
-
-  if (document.getElementById('inc_works').checked && state.works.length) {
-    t += '\n【登録ワーク一覧】\n';
-    state.works.forEach(function(w){ t += '・' + w.subject + '：' + w.name + (w.pages?'（全'+w.pages+'P）':'') + (w.publisher?'／'+w.publisher:'') + '\n'; });
-    t += '※ワークの活用状況はヒアリングで確認してください。\n';
+  if(document.getElementById('inc_works').checked&&data.works&&data.works.length){
+    t+='\n【登録ワーク一覧】\n';
+    data.works.forEach(function(w){t+='・'+w.subject+'：'+w.name+(w.pages?'（全'+w.pages+'P）':'')+(w.publisher?'／'+w.publisher:'')+'\n';});
+    t+='※ワークの活用状況はヒアリングで確認してください。\n';
+    if(data.testResults&&data.testResults.some(function(r){return r.type==='テスト範囲表';})){
+      t+='\n【きょういちへのお願い】\n登録ワークとテスト範囲表を照合して、各ワークの該当ページ・単元を教えてください。\n';
+    }
   }
-
-  if (document.getElementById('inc_note').checked && state.parentNote) {
-    t += '\n【保護者からのメモ】\n' + state.parentNote + '\n';
-  }
-
-  if (document.getElementById('inc_works').checked && state.works.length && state.testResults.some(function(r){ return r.type === 'テスト範囲表'; })) {
-    t += '\n【きょういちへのお願い】\n登録ワークとテスト範囲表を照合して、各ワークの該当ページ・単元を教えてください。\n';
-  }
-  t += '\n════════════════════════════════\n以上が学習カルテです。よろしくお願いします！\n════════════════════════════════';
-
-  document.getElementById('karteText').textContent = t;
-  document.getElementById('karteOutput').style.display = 'block';
-  document.getElementById('karteOutput').scrollIntoView({ behavior: 'smooth' });
+  if(document.getElementById('inc_note').checked&&data.parentNote){t+='\n【保護者からのメモ】\n'+data.parentNote+'\n';}
+  t+='\n════════════════════════════════\n以上が学習カルテです。よろしくお願いします！\n════════════════════════════════';
+  document.getElementById('karteText').textContent=t;
+  document.getElementById('karteOutput').style.display='block';
+  document.getElementById('karteOutput').scrollIntoView({behavior:'smooth'});
   toast('✅ 学習カルテを生成しました！');
 }
 
-function copyKarte() {
-  copyText(document.getElementById('karteText').textContent, '📋 カルテをコピーしました！きょういちに貼り付けてね✨');
-}
+function copyKarte(){copyText(document.getElementById('karteText').textContent,'📋 カルテをコピーしました！きょういちに貼り付けてね✨');}
 
-// 初期化
-loadState();
+// =================== 初期化 ===================
+loadAllData();
+updateChildBar();
+currentChild = allData.children.find(function(c){ return c.id === allData.currentChildId; });
 applyToForm();
 renderTests();
 renderWorks();
+renderGradeFilter();
 initCal();
 document.getElementById('promptTextarea').value = PROMPT;
-setTimeout(function(){ if(document.getElementById('tab-tests').classList.contains('active')) renderGraph(); }, 200);
+setTimeout(renderGraph, 200);
 </script>
 </body>
 </html>
