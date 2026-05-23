@@ -167,7 +167,7 @@ textarea { resize: vertical; min-height: 80px; }
 
 <div class="header">
   <div style="text-align:center;padding:8px 0 4px;">
-    <img src="%E3%83%AD%E3%82%B4.png" alt="きょういちベース" style="max-width:260px;width:80%;height:auto;">
+    <img src="logo.png" alt="きょういちベース" style="max-width:260px;width:80%;height:auto;">
   </div>
   <p style="text-align:center;color:var(--text-muted);font-size:12px;margin-top:4px;">学習カルテを作って、きょういちプランナーに渡そう</p>
 </div>
@@ -318,7 +318,7 @@ textarea { resize: vertical; min-height: 80px; }
       <button class="graph-filter-btn" onclick="setGraphFilter('実力テスト',this)">実力</button>
     </div>
     <div class="graph-wrap">
-      <canvas id="scoreChart" style="width:100%;min-height:220px;"></canvas>
+      <canvas id="scoreChart" width="340" height="220" style="width:100%;height:220px;display:block;"></canvas>
     </div>
     <div class="graph-legend" id="graphLegend"></div>
     <button class="graph-copy-btn" onclick="copyGraphText()">📋 グラフデータをコピー（ChatGPT用）</button>
@@ -493,7 +493,7 @@ function showTab(name) {
     document.querySelectorAll('.bnav-btn')[i].classList.add('active');
   }
   if (name === 'calendar') renderCalendar();
-  if (name === 'tests') setTimeout(renderGraph, 50);
+  if (name === 'tests') setTimeout(renderGraph, 150);
 }
 
 var promptExpanded = false;
@@ -713,7 +713,7 @@ function renderGraph() {
     return;
   }
 
-  var W = canvas.parentElement.offsetWidth - 8 || 340;
+  var W = (canvas.parentElement.offsetWidth > 0 ? canvas.parentElement.offsetWidth : 340) - 8;
   canvas.width = Math.max(W, filtered.length * 60 + 80);
   canvas.height = 220;
   var w = canvas.width, h = canvas.height;
@@ -996,7 +996,7 @@ renderTests();
 renderWorks();
 initCal();
 document.getElementById('promptTextarea').value = PROMPT;
-setTimeout(renderGraph, 100);
+setTimeout(function(){ if(document.getElementById('tab-tests').classList.contains('active')) renderGraph(); }, 200);
 </script>
 </body>
 </html>
