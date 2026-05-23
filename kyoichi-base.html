@@ -237,7 +237,7 @@ textarea { resize: vertical; min-height: 80px; }
 <section id="tab-basic" class="section">
   <div class="card">
     <div class="card-title"><span class="icon">👦</span>お子さんの情報</div>
-    <label>あだ名（きょういちが呼びかけるときに使います）</label>
+    <label>あだ名（きょういちプランナーが呼びかけるときに使います）</label>
     <input type="text" id="nickname" placeholder="例：たろう、はなちゃん">
     <label>誕生日</label>
     <input type="date" id="birthday">
@@ -579,7 +579,7 @@ function renderChildModalList() {
       '<div class="child-avatar">👦</div>' +
       '<div class="child-list-info"><div class="child-list-name">' + c.name + '</div><div class="child-list-grade">' + c.grade + '</div></div>' +
       '<button class="grade-up-btn" onclick="gradeUp(\'' + c.id + '\')">進級↑</button>' +
-      (allData.children.length > 1 ? '<button onclick="removeChild(\'' + c.id + '\')" style="background:none;border:none;color:var(--text-muted);font-size:18px;cursor:pointer;">✕</button>' : '') +
+      (allData.children.length > 1 ? '<button onclick="event.stopPropagation();removeChild(\'' + c.id + '\')" style="background:none;border:none;color:var(--text-muted);font-size:18px;cursor:pointer;padding:8px;">✕</button>' : '') +
       '</div>';
   }).join('');
 }
@@ -590,6 +590,11 @@ function addChild() {
   var grade = document.getElementById('newChildGrade').value;
   var id = 'child_' + Date.now();
   allData.children.push({id: id, name: name, grade: grade});
+  // 基本情報にも反映
+  var newData = JSON.parse(JSON.stringify(CHILD_DATA_TEMPLATE));
+  newData.nickname = name;
+  newData.grade = grade;
+  saveChildData(id, newData);
   saveAllData();
   updateChildBar();
   renderChildModalList();
@@ -598,7 +603,9 @@ function addChild() {
 }
 
 function removeChild(id) {
-  if (!confirm('この子のデータを削除しますか？')) return;
+  var child = allData.children.find(function(c){ return c.id === id; });
+  var name = child ? child.name : 'この子';
+  if (!confirm(name + 'のすべての情報を削除してよろしいですか？\n\nこの操作は元に戻せません。')) return;
   allData.children = allData.children.filter(function(c){ return c.id !== id; });
   localStorage.removeItem('kyoichiChild_' + id);
   if (allData.currentChildId === id) allData.currentChildId = allData.children[0].id;
