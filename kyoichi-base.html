@@ -724,88 +724,8 @@
         <span class="prompt-badge">コピーして使う</span>
       </div>
     </div>
-    <div class="prompt-text" id="promptText">
-# きょういちベース　写真読み取りプロンプト
-
-## あなたへの指示
-
-送られた写真を分析して、「きょういちベース」というWebツールに貼り付けやすいテキストデータに変換してください。
-
-## 写真の種類を自動で判断してください
-
-### 📊 模試の結果票の場合
-以下の形式で出力：
----
-【種別】模試
-【模試名】（例：〇〇模試　第2回）
-【実施日】（例：2025年11月）
-【国語】〇点
-【数学】〇点
-【英語】〇点
-【理科】〇点
-【社会】〇点
-【合計】〇点
-【偏差値】〇〇
-【志望校判定】A/B/C/D/E（あれば）
-【メモ】（気になる情報があれば）
----
-
-### 📝 定期テスト・実力テストの場合
-以下の形式で出力：
----
-【種別】定期テスト または 実力テスト
-【テスト名】（例：2学期 期末テスト）
-【実施日】（例：2025年12月）
-【国語】〇点
-【数学】〇点
-【英語】〇点
-【理科】〇点
-【社会】〇点
-【合計】〇点
-【学年順位】〇位（あれば）
-【クラス順位】〇位（あれば）
-【メモ】（気になる情報があれば）
----
-
-### 📅 スケジュール帳・予定表の場合
-以下の形式で出力：
----
-【種別】スケジュール
-【内容】
-・（日付）：（予定）
-・（日付）：（予定）
-（読み取れたものをすべて）
----
-
-### 📗 ワークの表紙・裏表紙の場合
-以下の形式で出力：
----
-【種別】ワーク
-【ワーク名】（例：〇〇社　中学数学ワーク）
-【教科】（例：数学）
-【対象学年】（例：中学3年）
-【総ページ数】〇ページ（わかれば）
-【出版社】（例：〇〇出版）
----
-
-## ⚠️ 個人情報の処理（必ず守ること）
-
-以下の情報は必ず削除またはマスクしてください：
-- 氏名（子ども・保護者・教師すべて）→「●●」に置き換え
-- 学校名・塾名 → 「●●学校」「●●塾」に置き換え
-- 受験番号・生徒番号・受験票番号 → 「削除済み」
-- 住所・電話番号・メールアドレス → 「削除済み」
-- その他個人を特定できる情報 → 「削除済み」
-
-マスクした場合は最後に「※個人情報をマスクしました」と一言添えてください。
-
-## 出力の注意
-
-- 読み取れなかった項目は「不明」と記載
-- 複数枚の写真がある場合はそれぞれ分けて出力
-- ツールへのコピペがしやすいよう、余分な説明は省いてシンプルに出力
-    </div>
-    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:4px;">
+    <textarea id="promptText" style="width:100%;height:130px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.15);border-radius:8px;padding:12px;font-size:12px;color:rgba(255,255,255,0.85);font-family:monospace;resize:none;line-height:1.6;" readonly></textarea>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;">
       <button class="prompt-copy-btn" id="copyPromptBtn" onclick="copyPrompt()">
         📋 プロンプトをコピー
       </button>
@@ -1069,6 +989,76 @@
 <div class="toast" id="toast"></div>
 
 <script>
+// =================== PROMPT TEXT ===================
+const PROMPT_CONTENT = `# きょういちベース　写真読み取りプロンプト
+
+## あなたへの指示
+送られた写真を分析して、「きょういちベース」というWebツールに貼り付けやすいテキストデータに変換してください。
+
+## 写真の種類を自動で判断してください
+
+### 模試の結果票の場合
+---
+【種別】模試
+【模試名】（例：〇〇模試　第2回）
+【実施日】（例：2025年11月）
+【国語】〇点
+【数学】〇点
+【英語】〇点
+【理科】〇点
+【社会】〇点
+【合計】〇点
+【偏差値】〇〇
+【志望校判定】A/B/C/D/E（あれば）
+【メモ】（気になる情報があれば）
+---
+
+### 定期テスト・実力テストの場合
+---
+【種別】定期テスト または 実力テスト
+【テスト名】（例：2学期 期末テスト）
+【実施日】（例：2025年12月）
+【国語】〇点
+【数学】〇点
+【英語】〇点
+【理科】〇点
+【社会】〇点
+【合計】〇点
+【学年順位】〇位（あれば）
+【クラス順位】〇位（あれば）
+【メモ】（気になる情報があれば）
+---
+
+### スケジュール帳・予定表の場合
+---
+【種別】スケジュール
+【内容】
+・（日付）：（予定）
+（読み取れたものをすべて）
+---
+
+### ワークの表紙・裏表紙の場合
+---
+【種別】ワーク
+【ワーク名】（例：〇〇社　中学数学ワーク）
+【教科】（例：数学）
+【対象学年】（例：中学3年）
+【総ページ数】〇ページ（わかれば）
+【出版社】（例：〇〇出版）
+---
+
+## 個人情報の処理（必ず守ること）
+- 氏名 → 「●●」に置き換え
+- 学校名・塾名 → 「●●学校」「●●塾」に置き換え
+- 受験番号・生徒番号 → 「削除済み」
+- 住所・電話番号・メールアドレス → 「削除済み」
+マスクした場合は「※個人情報をマスクしました」と添えてください。
+
+## 出力の注意
+- 読み取れなかった項目は「不明」と記載
+- 複数枚の写真がある場合はそれぞれ分けて出力
+- 余分な説明は省いてシンプルに出力`;
+
 // =================== STATE ===================
 let state = {
   examType: '高校受験',
@@ -1156,23 +1146,25 @@ function copyToClipboard(text, successMsg) {
 function fallbackCopy(text, successMsg) {
   const ta = document.createElement('textarea');
   ta.value = text;
-  ta.style.cssText = 'position:fixed;top:0;left:0;opacity:0;';
+  ta.style.cssText = 'position:fixed;top:0;left:0;opacity:0;width:1px;height:1px;';
   document.body.appendChild(ta);
   ta.focus();
   ta.select();
+  ta.setSelectionRange(0, 99999);
   try {
     document.execCommand('copy');
     showToast(successMsg);
   } catch(e) {
-    showToast('コピーできませんでした。手動で選択してコピーしてください');
+    showToast('コピーできませんでした。テキストを長押しして選択してください');
   }
   document.body.removeChild(ta);
 }
 
+let promptExpanded = false;
+
 function copyPrompt() {
-  const text = document.getElementById('promptText').textContent.trim();
   const btn = document.getElementById('copyPromptBtn');
-  copyToClipboard(text, 'プロンプトをコピーしました！ChatGPTに貼り付けてね📋');
+  copyToClipboard(PROMPT_CONTENT, 'プロンプトをコピーしました！ChatGPTに貼り付けてね📋');
   btn.textContent = '✅ コピーしました！';
   btn.classList.add('copied');
   setTimeout(() => {
@@ -1183,8 +1175,8 @@ function copyPrompt() {
 
 function togglePrompt() {
   promptExpanded = !promptExpanded;
-  const el = document.getElementById('promptText');
-  el.classList.toggle('expanded', promptExpanded);
+  const ta = document.getElementById('promptText');
+  ta.style.height = promptExpanded ? '420px' : '130px';
 }
 
 // =================== PASTE PARSE ===================
@@ -1551,6 +1543,8 @@ function downloadKarte() {
 }
 
 // =================== INIT ===================
+// textareaにプロンプトをセット
+document.getElementById('promptText').value = PROMPT_CONTENT;
 loadState();
 </script>
 </body>
