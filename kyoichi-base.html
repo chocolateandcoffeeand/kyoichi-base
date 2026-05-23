@@ -18,10 +18,7 @@
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { font-family: 'Noto Sans JP', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; padding-bottom: 80px; }
 
-.header { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%); padding: 20px 20px 28px; }
-.header-badge { display: inline-flex; align-items: center; background: rgba(255,255,255,0.25); color: white; font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 20px; margin-bottom: 8px; }
-.header h1 { font-family: 'Zen Maru Gothic', sans-serif; font-size: 22px; font-weight: 700; color: white; line-height: 1.3; }
-.header h1 span { font-size: 14px; opacity: 0.85; display: block; margin-top: 4px; font-weight: 500; }
+.header { background: #F8F8F8; padding: 16px 20px 20px; border-bottom: 1px solid var(--border); }
 
 .nav { display: flex; background: white; border-bottom: 1px solid var(--border); overflow-x: auto; scrollbar-width: none; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
 .nav::-webkit-scrollbar { display: none; }
@@ -151,6 +148,16 @@ textarea { resize: vertical; min-height: 80px; }
 .bnav-btn.active { color: var(--primary); }
 
 .empty-state { text-align: center; padding: 30px 20px; color: var(--text-muted); font-size: 13px; }
+
+/* グラフ */
+.graph-wrap { width: 100%; overflow-x: auto; }
+.graph-filter { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
+.graph-filter-btn { padding: 6px 12px; border-radius: 20px; border: 1.5px solid var(--border); background: white; font-size: 11px; font-weight: 700; cursor: pointer; font-family: inherit; color: var(--text-muted); }
+.graph-filter-btn.active { border-color: var(--primary); background: var(--primary); color: white; }
+.graph-legend { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
+.graph-legend-item { display: flex; align-items: center; gap: 4px; font-size: 11px; color: var(--text-light); }
+.graph-legend-dot { width: 12px; height: 4px; border-radius: 2px; flex-shrink: 0; }
+.graph-copy-btn { background: var(--bg); border: 1.5px solid var(--border); border-radius: 8px; padding: 8px 14px; font-size: 12px; font-weight: 700; cursor: pointer; font-family: inherit; color: var(--text-light); margin-top: 10px; display: flex; align-items: center; gap: 6px; }
 .empty-icon { font-size: 36px; margin-bottom: 8px; }
 .section-desc { font-size: 13px; color: var(--text-light); line-height: 1.6; margin-bottom: 16px; }
 .divider { height: 1px; background: var(--border); margin: 16px 0; }
@@ -159,8 +166,10 @@ textarea { resize: vertical; min-height: 80px; }
 <body>
 
 <div class="header">
-  <div class="header-badge">🚀 今日の1コ伴走プランナー専用基地</div>
-  <h1>きょういちベース<span>学習カルテを作って、きょういちに渡そう</span></h1>
+  <div style="text-align:center;padding:8px 0 4px;">
+    <img src="logo.png" alt="きょういちベース" style="max-width:260px;width:80%;height:auto;">
+  </div>
+  <p style="text-align:center;color:var(--text-muted);font-size:12px;margin-top:4px;">学習カルテを作って、きょういちに渡そう</p>
 </div>
 
 <nav class="nav">
@@ -300,6 +309,21 @@ textarea { resize: vertical; min-height: 80px; }
     <textarea id="tMemo" placeholder="気になったこと、テスト範囲の要点など..."></textarea>
     <button class="btn btn-primary" style="margin-top:16px;" onclick="addTest()">📊 追加する</button>
   </div>
+  <div class="card">
+    <div class="card-title"><span class="icon">📈</span>教科別点数グラフ</div>
+    <div class="graph-filter">
+      <button class="graph-filter-btn active" onclick="setGraphFilter('全て',this)">全て</button>
+      <button class="graph-filter-btn" onclick="setGraphFilter('模試',this)">模試</button>
+      <button class="graph-filter-btn" onclick="setGraphFilter('定期テスト',this)">定期</button>
+      <button class="graph-filter-btn" onclick="setGraphFilter('実力テスト',this)">実力</button>
+    </div>
+    <div class="graph-wrap">
+      <canvas id="scoreChart" style="width:100%;min-height:220px;"></canvas>
+    </div>
+    <div class="graph-legend" id="graphLegend"></div>
+    <button class="graph-copy-btn" onclick="copyGraphText()">📋 グラフデータをコピー（ChatGPT用）</button>
+  </div>
+
   <div class="card">
     <div class="card-title"><span class="icon">📈</span>テスト結果一覧</div>
     <div id="testList"><div class="empty-state"><div class="empty-icon">📊</div>まだありません</div></div>
@@ -469,6 +493,7 @@ function showTab(name) {
     document.querySelectorAll('.bnav-btn')[i].classList.add('active');
   }
   if (name === 'calendar') renderCalendar();
+  if (name === 'tests') setTimeout(renderGraph, 50);
 }
 
 var promptExpanded = false;
@@ -650,6 +675,146 @@ function renderCalendar() {
   }).join('');
 }
 
+// グラフ
+var graphFilter = '全て';
+var SUBJECT_COLORS = {
+  '国語': '#FF8C69', '数学': '#4ECDC4', '英語': '#9F7AEA',
+  '理科': '#68D391', '社会': '#F6AD55', '算数': '#FC8181'
+};
+var SUBJECTS = [{k:'kokugo',l:'国語'},{k:'sugaku',l:'数学'},{k:'eigo',l:'英語'},{k:'rika',l:'理科'},{k:'shakai',l:'社会'},{k:'sansu',l:'算数'}];
+
+function setGraphFilter(type, btn) {
+  graphFilter = type;
+  document.querySelectorAll('.graph-filter-btn').forEach(function(b){ b.classList.remove('active'); });
+  btn.classList.add('active');
+  renderGraph();
+}
+
+function renderGraph() {
+  var canvas = document.getElementById('scoreChart');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  var filtered = state.testResults.filter(function(r){
+    if (r.type === 'テスト範囲表') return false;
+    if (graphFilter === '全て') return true;
+    return r.type === graphFilter;
+  }).slice().reverse(); // 古い順
+
+  if (!filtered.length) {
+    canvas.width = canvas.offsetWidth || 300;
+    canvas.height = 220;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = '#BBA99F';
+    ctx.font = '13px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('データがありません', canvas.width/2, 110);
+    document.getElementById('graphLegend').innerHTML = '';
+    return;
+  }
+
+  var W = canvas.parentElement.offsetWidth - 8 || 340;
+  canvas.width = Math.max(W, filtered.length * 60 + 80);
+  canvas.height = 220;
+  var w = canvas.width, h = canvas.height;
+  var padL = 40, padR = 20, padT = 20, padB = 50;
+  var gw = w - padL - padR;
+  var gh = h - padT - padB;
+
+  ctx.clearRect(0, 0, w, h);
+
+  // 背景グリッド
+  ctx.strokeStyle = '#F0E0D8';
+  ctx.lineWidth = 1;
+  var ySteps = [0,20,40,60,80,100];
+  ySteps.forEach(function(v){
+    var y = padT + gh - (v/100)*gh;
+    ctx.beginPath(); ctx.moveTo(padL, y); ctx.lineTo(padL+gw, y); ctx.stroke();
+    ctx.fillStyle = '#BBA99F'; ctx.font = '10px sans-serif'; ctx.textAlign = 'right';
+    ctx.fillText(v, padL-4, y+4);
+  });
+
+  // X軸ラベル
+  var xStep = gw / Math.max(filtered.length - 1, 1);
+  filtered.forEach(function(r, i){
+    var x = padL + (filtered.length===1 ? gw/2 : i*xStep);
+    ctx.fillStyle = '#8B6B5E'; ctx.font = '10px sans-serif'; ctx.textAlign = 'center';
+    var label = (r.name||r.type).substring(0,6);
+    ctx.fillText(label, x, h - padB + 14);
+    if (r.date) ctx.fillText(r.date.substring(5), x, h - padB + 26);
+  });
+
+  // 各教科のラインを描画
+  var usedSubjects = [];
+  SUBJECTS.forEach(function(s){
+    var hasData = filtered.some(function(r){ return r[s.k] && !isNaN(Number(r[s.k])); });
+    if (!hasData) return;
+    usedSubjects.push(s);
+    var color = SUBJECT_COLORS[s.l] || '#999';
+
+    ctx.beginPath();
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 2.5;
+    ctx.lineJoin = 'round';
+
+    var started = false;
+    filtered.forEach(function(r, i){
+      var val = Number(r[s.k]);
+      if (!r[s.k] || isNaN(val)) return;
+      // 100点満点に正規化（合計点対応）
+      var maxScore = 100;
+      var pct = Math.min(val / maxScore, 1);
+      var x = padL + (filtered.length===1 ? gw/2 : i*xStep);
+      var y = padT + gh - pct*gh;
+      if (!started) { ctx.moveTo(x, y); started = true; }
+      else { ctx.lineTo(x, y); }
+    });
+    ctx.stroke();
+
+    // ドット＋数値
+    filtered.forEach(function(r, i){
+      var val = Number(r[s.k]);
+      if (!r[s.k] || isNaN(val)) return;
+      var pct = Math.min(val / 100, 1);
+      var x = padL + (filtered.length===1 ? gw/2 : i*xStep);
+      var y = padT + gh - pct*gh;
+      ctx.beginPath();
+      ctx.arc(x, y, 5, 0, Math.PI*2);
+      ctx.fillStyle = color; ctx.fill();
+      ctx.strokeStyle = 'white'; ctx.lineWidth = 1.5; ctx.stroke();
+      ctx.fillStyle = color; ctx.font = 'bold 10px sans-serif'; ctx.textAlign = 'center';
+      ctx.fillText(val, x, y-9);
+    });
+  });
+
+  // 凡例
+  var legendEl = document.getElementById('graphLegend');
+  legendEl.innerHTML = usedSubjects.map(function(s){
+    return '<div class="graph-legend-item"><div class="graph-legend-dot" style="background:'+SUBJECT_COLORS[s.l]+';"></div>'+s.l+'</div>';
+  }).join('');
+}
+
+function copyGraphText() {
+  var filtered = state.testResults.filter(function(r){
+    if (r.type === 'テスト範囲表') return false;
+    if (graphFilter === '全て') return true;
+    return r.type === graphFilter;
+  }).slice().reverse();
+
+  if (!filtered.length) { toast('データがありません'); return; }
+
+  var text = '【教科別点数データ（' + graphFilter + '）】\n\n';
+  text += 'テスト名\t国語\t数学\t英語\t理科\t社会\t算数\t合計\t偏差値\n';
+  filtered.forEach(function(r){
+    text += (r.name||r.type) + (r.date?'('+r.date+')':'') + '	';
+    text += (r.kokugo||'-') + '\t' + (r.sugaku||'-') + '\t' + (r.eigo||'-') + '\t';
+    text += (r.rika||'-') + '\t' + (r.shakai||'-') + '\t' + (r.sansu||'-') + '\t';
+    text += (r.total||'-') + '\t' + (r.deviation||'-') + '\n';
+  });
+  text += '\n推移の分析と今後のアドバイスをお願いします。';
+  copyText(text, '📊 グラフデータをコピーしました！ChatGPTに貼り付けてね');
+}
+
 // テスト
 var currentTestType = '模試';
 function selTestType(btn, type) {
@@ -676,7 +841,7 @@ function addTest() {
     judge: document.getElementById('tJudge').value,
     memo: document.getElementById('tMemo').value
   });
-  saveState(); renderTests();
+  saveState(); renderTests(); renderGraph();
   ['tName','tDate','s_kokugo','s_sugaku','s_eigo','s_rika','s_shakai','s_sansu','tTotal','tDeviation','tRank','tJudge','tMemo'].forEach(function(id){ document.getElementById(id).value=''; });
   toast('✅ 追加しました！');
 }
@@ -701,7 +866,7 @@ function renderTests() {
       '</div>';
   }).join('');
 }
-function delTest(i) { if(!confirm('削除しますか？'))return; state.testResults.splice(i,1); saveState(); renderTests(); toast('削除しました'); }
+function delTest(i) { if(!confirm('削除しますか？'))return; state.testResults.splice(i,1); saveState(); renderTests(); renderGraph(); toast('削除しました'); }
 
 // ワーク
 var EMOJI = {'国語':'📗','数学':'📘','英語':'📙','理科':'🔬','社会':'🌍','算数':'🔢','その他':'📓'};
@@ -809,6 +974,9 @@ function generateKarte() {
     t += '\n【保護者からのメモ】\n' + state.parentNote + '\n';
   }
 
+  if (document.getElementById('inc_works').checked && state.works.length && state.testResults.some(function(r){ return r.type === 'テスト範囲表'; })) {
+    t += '\n【きょういちへのお願い】\n登録ワークとテスト範囲表を照合して、各ワークの該当ページ・単元を教えてください。\n';
+  }
   t += '\n════════════════════════════════\n以上が学習カルテです。よろしくお願いします！\n════════════════════════════════';
 
   document.getElementById('karteText').textContent = t;
@@ -828,6 +996,7 @@ renderTests();
 renderWorks();
 initCal();
 document.getElementById('promptTextarea').value = PROMPT;
+setTimeout(renderGraph, 100);
 </script>
 </body>
 </html>
