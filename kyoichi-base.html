@@ -1,0 +1,1557 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>きょういちベース｜今日の1コ伴走プランナー専用基地</title>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --primary: #FF8C69;
+    --primary-light: #FFB49A;
+    --primary-dark: #E06B48;
+    --accent: #4ECDC4;
+    --accent-dark: #38B2AA;
+    --bg: #FFF9F6;
+    --bg-card: #FFFFFF;
+    --text: #3D2B1F;
+    --text-light: #8B6B5E;
+    --text-muted: #BBA99F;
+    --border: #F0E0D8;
+    --success: #68D391;
+    --warning: #F6AD55;
+    --radius: 16px;
+    --radius-sm: 10px;
+    --shadow: 0 4px 20px rgba(255,140,105,0.12);
+    --shadow-card: 0 2px 12px rgba(61,43,31,0.08);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Noto Sans JP', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding-bottom: 80px;
+  }
+
+  /* HEADER */
+  .header {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+    padding: 20px 20px 28px;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::before {
+    content: '';
+    position: absolute;
+    top: -30px; right: -30px;
+    width: 120px; height: 120px;
+    background: rgba(255,255,255,0.12);
+    border-radius: 50%;
+  }
+  .header::after {
+    content: '';
+    position: absolute;
+    bottom: -20px; left: 40px;
+    width: 80px; height: 80px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 50%;
+  }
+  .header-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255,255,255,0.25);
+    color: white;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 20px;
+    margin-bottom: 8px;
+    letter-spacing: 0.05em;
+  }
+  .header h1 {
+    font-family: 'Zen Maru Gothic', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: white;
+    line-height: 1.3;
+  }
+  .header h1 span {
+    font-size: 14px;
+    opacity: 0.85;
+    display: block;
+    margin-top: 4px;
+    font-weight: 500;
+  }
+
+  /* NAV TABS */
+  .nav {
+    display: flex;
+    background: white;
+    border-bottom: 1px solid var(--border);
+    overflow-x: auto;
+    scrollbar-width: none;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  }
+  .nav::-webkit-scrollbar { display: none; }
+  .nav-btn {
+    flex: none;
+    padding: 14px 16px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text-muted);
+    background: none;
+    border: none;
+    cursor: pointer;
+    white-space: nowrap;
+    position: relative;
+    transition: color 0.2s;
+    font-family: 'Noto Sans JP', sans-serif;
+  }
+  .nav-btn.active {
+    color: var(--primary);
+  }
+  .nav-btn.active::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 12px; right: 12px;
+    height: 3px;
+    background: var(--primary);
+    border-radius: 3px 3px 0 0;
+  }
+
+  /* SECTIONS */
+  .section { display: none; padding: 16px; }
+  .section.active { display: block; }
+
+  /* CARDS */
+  .card {
+    background: var(--bg-card);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom: 16px;
+    box-shadow: var(--shadow-card);
+    border: 1px solid var(--border);
+  }
+  .card-title {
+    font-family: 'Zen Maru Gothic', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .card-title .icon {
+    width: 28px; height: 28px;
+    background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+
+  /* FORM ELEMENTS */
+  label {
+    display: block;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text-light);
+    margin-bottom: 6px;
+    margin-top: 14px;
+  }
+  label:first-child { margin-top: 0; }
+
+  input[type="text"],
+  input[type="date"],
+  input[type="number"],
+  select,
+  textarea {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-size: 14px;
+    color: var(--text);
+    background: var(--bg);
+    font-family: 'Noto Sans JP', sans-serif;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    -webkit-appearance: none;
+  }
+  input:focus, select:focus, textarea:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(255,140,105,0.15);
+    background: white;
+  }
+  textarea { resize: vertical; min-height: 80px; }
+
+  /* BUTTONS */
+  .btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 14px 20px;
+    border-radius: var(--radius-sm);
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    border: none;
+    font-family: 'Noto Sans JP', sans-serif;
+    transition: all 0.2s;
+    width: 100%;
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: white;
+    box-shadow: 0 4px 12px rgba(255,140,105,0.35);
+  }
+  .btn-primary:active { transform: scale(0.98); }
+  .btn-accent {
+    background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+    color: white;
+    box-shadow: 0 4px 12px rgba(78,205,196,0.35);
+  }
+  .btn-outline {
+    background: white;
+    color: var(--primary);
+    border: 2px solid var(--primary);
+  }
+  .btn-ghost {
+    background: var(--bg);
+    color: var(--text-light);
+    border: 1.5px solid var(--border);
+  }
+  .btn-sm {
+    padding: 8px 14px;
+    font-size: 12px;
+    width: auto;
+  }
+  .btn-danger {
+    background: white;
+    color: #E53E3E;
+    border: 1.5px solid #FEB2B2;
+  }
+
+  /* PROMPT BOX */
+  .prompt-box {
+    background: linear-gradient(135deg, #1A1A2E, #16213E);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom: 16px;
+    position: relative;
+    overflow: hidden;
+  }
+  .prompt-box::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.02'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  }
+  .prompt-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+  }
+  .prompt-title {
+    font-family: 'Zen Maru Gothic', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .prompt-badge {
+    font-size: 10px;
+    background: var(--accent);
+    color: white;
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-weight: 700;
+  }
+  .prompt-text {
+    font-size: 12px;
+    color: rgba(255,255,255,0.7);
+    line-height: 1.7;
+    background: rgba(255,255,255,0.05);
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 12px;
+    font-family: monospace;
+    max-height: 120px;
+    overflow: hidden;
+    position: relative;
+  }
+  .prompt-text.expanded { max-height: none; }
+  .prompt-fade {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 40px;
+    background: linear-gradient(transparent, rgba(26,26,46,0.9));
+  }
+  .prompt-copy-btn {
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 16px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'Noto Sans JP', sans-serif;
+    transition: all 0.2s;
+  }
+  .prompt-copy-btn:active { transform: scale(0.97); }
+  .prompt-copy-btn.copied {
+    background: var(--success);
+  }
+
+  /* HOW TO USE */
+  .how-to {
+    background: linear-gradient(135deg, #FFF0EC, #FFF8F6);
+    border-radius: var(--radius);
+    padding: 16px;
+    margin-bottom: 16px;
+    border: 1.5px dashed var(--primary-light);
+  }
+  .how-to-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--primary-dark);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .how-to-steps {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .how-to-steps li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 13px;
+    color: var(--text);
+    line-height: 1.5;
+  }
+  .step-num {
+    width: 22px; height: 22px;
+    background: var(--primary);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  /* TEST RESULTS */
+  .test-item {
+    background: var(--bg);
+    border-radius: var(--radius-sm);
+    padding: 14px;
+    margin-bottom: 10px;
+    border: 1.5px solid var(--border);
+    position: relative;
+  }
+  .test-item-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+  .test-type-badge {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 20px;
+    background: var(--primary-light);
+    color: white;
+  }
+  .test-type-badge.teiki { background: #9F7AEA; }
+  .test-type-badge.jitsuryoku { background: var(--accent-dark); }
+  .test-type-badge.moshi { background: var(--primary); }
+
+  .scores-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+  }
+  .score-item {
+    text-align: center;
+  }
+  .score-label {
+    font-size: 10px;
+    color: var(--text-muted);
+    font-weight: 700;
+    display: block;
+    margin-bottom: 3px;
+  }
+  .score-input-wrap input {
+    text-align: center;
+    padding: 8px 4px;
+    font-size: 16px;
+    font-weight: 700;
+    border-radius: 8px;
+  }
+
+  /* WORK LIST */
+  .work-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--bg);
+    border-radius: var(--radius-sm);
+    padding: 14px;
+    margin-bottom: 10px;
+    border: 1.5px solid var(--border);
+  }
+  .work-icon {
+    width: 40px; height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+    background: linear-gradient(135deg, var(--primary-light), var(--primary));
+  }
+  .work-info { flex: 1; min-width: 0; }
+  .work-name {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .work-subject {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 2px;
+  }
+  .work-delete {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 18px;
+    cursor: pointer;
+    padding: 4px;
+    line-height: 1;
+  }
+
+  /* KARTE OUTPUT */
+  .karte-box {
+    background: #1A1A2E;
+    border-radius: var(--radius);
+    padding: 20px;
+    position: relative;
+  }
+  .karte-text {
+    font-size: 12px;
+    color: rgba(255,255,255,0.85);
+    line-height: 1.8;
+    font-family: monospace;
+    white-space: pre-wrap;
+    word-break: break-all;
+  }
+  .karte-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 14px;
+  }
+
+  /* DATE ITEMS */
+  .date-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .date-item:last-child { border-bottom: none; }
+  .date-label {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text-light);
+    flex: 1;
+  }
+  .date-value {
+    font-size: 13px;
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  /* PASTE AREA */
+  .paste-area {
+    border: 2px dashed var(--border);
+    border-radius: var(--radius-sm);
+    padding: 16px;
+    text-align: center;
+    background: var(--bg);
+    transition: all 0.2s;
+    cursor: pointer;
+  }
+  .paste-area:focus-within {
+    border-color: var(--accent);
+    background: white;
+  }
+  .paste-area textarea {
+    border: none;
+    background: transparent;
+    text-align: left;
+    padding: 8px 0;
+    font-size: 12px;
+    color: var(--text);
+    min-height: 100px;
+  }
+  .paste-hint {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+  }
+
+  /* TOAST */
+  .toast {
+    position: fixed;
+    bottom: 90px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: #2D3748;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 700;
+    opacity: 0;
+    transition: all 0.3s;
+    z-index: 1000;
+    white-space: nowrap;
+  }
+  .toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  /* BOTTOM NAV */
+  .bottom-nav {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: white;
+    border-top: 1px solid var(--border);
+    display: flex;
+    padding: 8px 0 env(safe-area-inset-bottom, 8px);
+    z-index: 200;
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.08);
+  }
+  .bottom-nav-btn {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 4px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--text-muted);
+    font-size: 10px;
+    font-weight: 700;
+    font-family: 'Noto Sans JP', sans-serif;
+    transition: color 0.2s;
+  }
+  .bottom-nav-btn .nav-icon { font-size: 20px; }
+  .bottom-nav-btn.active { color: var(--primary); }
+
+  /* MISC */
+  .section-desc {
+    font-size: 13px;
+    color: var(--text-light);
+    line-height: 1.6;
+    margin-bottom: 16px;
+  }
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 16px 0;
+  }
+  .tag {
+    display: inline-flex;
+    align-items: center;
+    background: var(--primary-light);
+    color: white;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 20px;
+    margin-right: 6px;
+    margin-bottom: 6px;
+  }
+  .tag.green { background: var(--success); color: #22543D; }
+  .tag.blue { background: #90CDF4; color: #1A365D; }
+  .empty-state {
+    text-align: center;
+    padding: 30px 20px;
+    color: var(--text-muted);
+    font-size: 13px;
+  }
+  .empty-icon { font-size: 36px; margin-bottom: 8px; }
+
+  /* EXAM TYPE SELECTOR */
+  .exam-type-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+  .exam-type-btn {
+    flex: 1;
+    padding: 10px 6px;
+    border-radius: 8px;
+    border: 2px solid var(--border);
+    background: white;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text-muted);
+    cursor: pointer;
+    text-align: center;
+    font-family: 'Noto Sans JP', sans-serif;
+    transition: all 0.2s;
+  }
+  .exam-type-btn.selected {
+    border-color: var(--primary);
+    background: var(--primary);
+    color: white;
+  }
+
+  /* SUBJECT SCORE ROW */
+  .subject-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  .subject-name {
+    width: 36px;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-light);
+    text-align: center;
+    flex-shrink: 0;
+  }
+  .subject-row input {
+    flex: 1;
+    padding: 10px;
+    text-align: center;
+    font-size: 16px;
+    font-weight: 700;
+  }
+  .subject-max {
+    font-size: 11px;
+    color: var(--text-muted);
+    flex-shrink: 0;
+    width: 36px;
+  }
+
+  .info-row {
+    display: flex;
+    gap: 10px;
+  }
+  .info-row > div { flex: 1; }
+
+  .exam-grade-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-badge">🚀 今日の1コ伴走プランナー専用基地</div>
+  <h1>
+    きょういちベース
+    <span>学習カルテを作って、きょういちに渡そう</span>
+  </h1>
+</div>
+
+<nav class="nav">
+  <button class="nav-btn active" onclick="showSection('prompt')">📷 プロンプト</button>
+  <button class="nav-btn" onclick="showSection('basic')">📋 基本情報</button>
+  <button class="nav-btn" onclick="showSection('tests')">📊 テスト結果</button>
+  <button class="nav-btn" onclick="showSection('works')">📚 ワーク</button>
+  <button class="nav-btn" onclick="showSection('karte')">📄 カルテ生成</button>
+</nav>
+
+<!-- =================== プロンプト =================== -->
+<section id="section-prompt" class="section active">
+
+  <div class="how-to">
+    <div class="how-to-title">💡 きょういちベースの使い方</div>
+    <ol class="how-to-steps">
+      <li><span class="step-num">1</span><span>下のプロンプトをコピーして、ChatGPTを開く</span></li>
+      <li><span class="step-num">2</span><span>写真（模試・テスト・ワーク表紙など）と一緒に貼り付けて送る</span></li>
+      <li><span class="step-num">3</span><span>返ってきたテキストを各ページにペーストして保存</span></li>
+      <li><span class="step-num">4</span><span>「カルテ生成」タブで学習カルテをコピーしてきょういちに渡す✨</span></li>
+    </ol>
+  </div>
+
+  <div class="prompt-box">
+    <div class="prompt-header">
+      <div class="prompt-title">
+        🤖 ChatGPT用プロンプト
+        <span class="prompt-badge">コピーして使う</span>
+      </div>
+    </div>
+    <div class="prompt-text" id="promptText">
+# きょういちベース　写真読み取りプロンプト
+
+## あなたへの指示
+
+送られた写真を分析して、「きょういちベース」というWebツールに貼り付けやすいテキストデータに変換してください。
+
+## 写真の種類を自動で判断してください
+
+### 📊 模試の結果票の場合
+以下の形式で出力：
+---
+【種別】模試
+【模試名】（例：〇〇模試　第2回）
+【実施日】（例：2025年11月）
+【国語】〇点
+【数学】〇点
+【英語】〇点
+【理科】〇点
+【社会】〇点
+【合計】〇点
+【偏差値】〇〇
+【志望校判定】A/B/C/D/E（あれば）
+【メモ】（気になる情報があれば）
+---
+
+### 📝 定期テスト・実力テストの場合
+以下の形式で出力：
+---
+【種別】定期テスト または 実力テスト
+【テスト名】（例：2学期 期末テスト）
+【実施日】（例：2025年12月）
+【国語】〇点
+【数学】〇点
+【英語】〇点
+【理科】〇点
+【社会】〇点
+【合計】〇点
+【学年順位】〇位（あれば）
+【クラス順位】〇位（あれば）
+【メモ】（気になる情報があれば）
+---
+
+### 📅 スケジュール帳・予定表の場合
+以下の形式で出力：
+---
+【種別】スケジュール
+【内容】
+・（日付）：（予定）
+・（日付）：（予定）
+（読み取れたものをすべて）
+---
+
+### 📗 ワークの表紙・裏表紙の場合
+以下の形式で出力：
+---
+【種別】ワーク
+【ワーク名】（例：〇〇社　中学数学ワーク）
+【教科】（例：数学）
+【対象学年】（例：中学3年）
+【総ページ数】〇ページ（わかれば）
+【出版社】（例：〇〇出版）
+---
+
+## ⚠️ 個人情報の処理（必ず守ること）
+
+以下の情報は必ず削除またはマスクしてください：
+- 氏名（子ども・保護者・教師すべて）→「●●」に置き換え
+- 学校名・塾名 → 「●●学校」「●●塾」に置き換え
+- 受験番号・生徒番号・受験票番号 → 「削除済み」
+- 住所・電話番号・メールアドレス → 「削除済み」
+- その他個人を特定できる情報 → 「削除済み」
+
+マスクした場合は最後に「※個人情報をマスクしました」と一言添えてください。
+
+## 出力の注意
+
+- 読み取れなかった項目は「不明」と記載
+- 複数枚の写真がある場合はそれぞれ分けて出力
+- ツールへのコピペがしやすいよう、余分な説明は省いてシンプルに出力
+    </div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:4px;">
+      <button class="prompt-copy-btn" id="copyPromptBtn" onclick="copyPrompt()">
+        📋 プロンプトをコピー
+      </button>
+      <button class="prompt-copy-btn" style="background:rgba(255,255,255,0.15);" onclick="togglePrompt()">
+        👁 全文を見る
+      </button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="icon">📥</span>ChatGPTの返答をここに貼り付ける</div>
+    <p class="section-desc">ChatGPTが返してくれたテキストをそのまま貼り付けてください。内容を自動で判別して各タブに振り分けます。</p>
+    <div class="paste-area">
+      <p class="paste-hint">👇 ここにペーストしてください</p>
+      <textarea id="gptPasteArea" placeholder="ChatGPTの返答をここにペースト..."></textarea>
+    </div>
+    <div style="margin-top:12px;">
+      <button class="btn btn-accent" onclick="parsePaste()">✨ 内容を取り込む</button>
+    </div>
+  </div>
+
+</section>
+
+<!-- =================== 基本情報 =================== -->
+<section id="section-basic" class="section">
+
+  <div class="card">
+    <div class="card-title"><span class="icon">🎯</span>志望校・受験タイプ</div>
+
+    <label>受験タイプ</label>
+    <div class="exam-type-row">
+      <button class="exam-type-btn selected" onclick="selectExamType(this,'高校受験')">高校受験</button>
+      <button class="exam-type-btn" onclick="selectExamType(this,'中学受験')">中学受験</button>
+    </div>
+    <input type="hidden" id="examType" value="高校受験">
+
+    <label>第1志望校</label>
+    <input type="text" id="school1" placeholder="例：〇〇高校">
+
+    <label>第2志望校（任意）</label>
+    <input type="text" id="school2" placeholder="例：〇〇高校">
+
+    <label>第3志望校（任意）</label>
+    <input type="text" id="school3" placeholder="例：〇〇高校">
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="icon">📅</span>受験・試験の日程</div>
+
+    <label>私立受験日</label>
+    <input type="date" id="privateExamDate">
+
+    <label>公立受験日（前期）</label>
+    <input type="date" id="publicExamDate1">
+
+    <label>公立受験日（後期・任意）</label>
+    <input type="date" id="publicExamDate2">
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="icon">📝</span>今後の試験予定</div>
+    <p class="section-desc">模試・定期テスト・実力テストの予定日を追加できます</p>
+
+    <div id="scheduledTests">
+    </div>
+
+    <button class="btn btn-ghost" style="margin-top:8px;" onclick="addScheduledTest()">＋ 試験予定を追加</button>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="icon">💭</span>保護者からのメモ・気づき</div>
+    <textarea id="parentNote" placeholder="最近の様子、気になること、頑張っていること など..."></textarea>
+  </div>
+
+  <button class="btn btn-primary" onclick="saveBasic()">💾 基本情報を保存</button>
+
+</section>
+
+<!-- =================== テスト結果 =================== -->
+<section id="section-tests" class="section">
+
+  <div class="card">
+    <div class="card-title"><span class="icon">➕</span>テスト結果を追加</div>
+
+    <label>テストの種類</label>
+    <div class="exam-type-row" id="testTypeRow">
+      <button class="exam-type-btn selected" onclick="selectTestType(this,'模試')">模試</button>
+      <button class="exam-type-btn" onclick="selectTestType(this,'定期テスト')">定期</button>
+      <button class="exam-type-btn" onclick="selectTestType(this,'実力テスト')">実力</button>
+    </div>
+    <input type="hidden" id="newTestType" value="模試">
+
+    <div class="info-row">
+      <div>
+        <label>テスト名</label>
+        <input type="text" id="newTestName" placeholder="例：第2回模試">
+      </div>
+      <div>
+        <label>実施日</label>
+        <input type="date" id="newTestDate">
+      </div>
+    </div>
+
+    <label>教科別点数（空欄はスキップ）</label>
+    <div class="subject-row"><span class="subject-name">国語</span><input type="number" id="s_kokugo" placeholder="点数" min="0" max="999"><span class="subject-max">点</span></div>
+    <div class="subject-row"><span class="subject-name">数学</span><input type="number" id="s_sugaku" placeholder="点数" min="0" max="999"><span class="subject-max">点</span></div>
+    <div class="subject-row"><span class="subject-name">英語</span><input type="number" id="s_eigo" placeholder="点数" min="0" max="999"><span class="subject-max">点</span></div>
+    <div class="subject-row"><span class="subject-name">理科</span><input type="number" id="s_rika" placeholder="点数" min="0" max="999"><span class="subject-max">点</span></div>
+    <div class="subject-row"><span class="subject-name">社会</span><input type="number" id="s_shakai" placeholder="点数" min="0" max="999"><span class="subject-max">点</span></div>
+    <div class="subject-row"><span class="subject-name">算数</span><input type="number" id="s_sansu" placeholder="点数" min="0" max="999"><span class="subject-max">点</span></div>
+
+    <div class="exam-grade-row" style="margin-top:10px;">
+      <div>
+        <label>合計点（任意）</label>
+        <input type="number" id="newTestTotal" placeholder="合計">
+      </div>
+      <div>
+        <label>偏差値（任意）</label>
+        <input type="number" id="newTestDeviation" placeholder="偏差値" step="0.1">
+      </div>
+    </div>
+
+    <div class="exam-grade-row">
+      <div>
+        <label>学年順位（任意）</label>
+        <input type="number" id="newTestRank" placeholder="位">
+      </div>
+      <div>
+        <label>志望校判定（任意）</label>
+        <input type="text" id="newTestJudge" placeholder="例：B判定">
+      </div>
+    </div>
+
+    <label>メモ（任意）</label>
+    <textarea id="newTestMemo" placeholder="気になったこと、コメントなど..."></textarea>
+
+    <button class="btn btn-primary" style="margin-top:16px;" onclick="addTestResult()">📊 テスト結果を追加</button>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="icon">📈</span>テスト結果一覧</div>
+    <div id="testResultsList">
+      <div class="empty-state">
+        <div class="empty-icon">📊</div>
+        テスト結果がまだありません
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<!-- =================== ワーク =================== -->
+<section id="section-works" class="section">
+
+  <div class="how-to" style="border-color: var(--accent); background: linear-gradient(135deg, #E6FFFA, #F0FFFE);">
+    <div class="how-to-title" style="color: var(--accent-dark);">📚 ワークの登録方法</div>
+    <ol class="how-to-steps">
+      <li><span class="step-num" style="background:var(--accent);">1</span><span>ワークの表紙をChatGPTに送る（プロンプトタブのプロンプトを使ってね）</span></li>
+      <li><span class="step-num" style="background:var(--accent);">2</span><span>返ってきたテキストをペーストすると自動登録</span></li>
+      <li><span class="step-num" style="background:var(--accent);">3</span><span>きょういちが「このワーク使えてる？」って聞いてくれるよ✨</span></li>
+    </ol>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="icon">➕</span>ワークを手動で追加</div>
+
+    <div class="info-row">
+      <div>
+        <label>教科</label>
+        <select id="newWorkSubject">
+          <option>国語</option>
+          <option>数学</option>
+          <option>英語</option>
+          <option>理科</option>
+          <option>社会</option>
+          <option>算数</option>
+          <option>その他</option>
+        </select>
+      </div>
+      <div>
+        <label>総ページ数（任意）</label>
+        <input type="number" id="newWorkPages" placeholder="例：200">
+      </div>
+    </div>
+
+    <label>ワーク名</label>
+    <input type="text" id="newWorkName" placeholder="例：〇〇社 中学数学ワーク">
+
+    <label>出版社（任意）</label>
+    <input type="text" id="newWorkPublisher" placeholder="例：〇〇出版">
+
+    <button class="btn btn-accent" style="margin-top:16px;" onclick="addWork()">📚 ワークを追加</button>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="icon">📖</span>登録済みワーク一覧</div>
+    <div id="worksList">
+      <div class="empty-state">
+        <div class="empty-icon">📚</div>
+        ワークがまだ登録されていません
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<!-- =================== カルテ生成 =================== -->
+<section id="section-karte" class="section">
+
+  <div class="card">
+    <div class="card-title"><span class="icon">✨</span>学習カルテを生成する</div>
+    <p class="section-desc">登録した情報をまとめて「きょういちプランナー」に渡せる形式に変換します。2〜4週間に1回、きょういちとの振り返りの前にコピーして使ってください。</p>
+    <button class="btn btn-primary" onclick="generateKarte()">📄 学習カルテを生成</button>
+  </div>
+
+  <div id="karteOutput" style="display:none;">
+    <div class="card">
+      <div class="card-title"><span class="icon">📋</span>生成された学習カルテ</div>
+      <div class="karte-box">
+        <pre class="karte-text" id="karteText"></pre>
+      </div>
+      <div class="karte-actions">
+        <button class="btn btn-accent" onclick="copyKarte()" style="flex:2;">📋 カルテをコピー</button>
+        <button class="btn btn-ghost btn-sm" onclick="downloadKarte()" style="flex:1;">💾 保存</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="icon">💬</span>きょういちへの渡し方</div>
+      <ol class="how-to-steps">
+        <li><span class="step-num">1</span><span>上の「カルテをコピー」を押す</span></li>
+        <li><span class="step-num">2</span><span>きょういちプランナーを開く</span></li>
+        <li><span class="step-num">3</span><span>「こんにちは！学習カルテを持ってきたよ」と最初に送る</span></li>
+        <li><span class="step-num">4</span><span>カルテのテキストを貼り付けて送る</span></li>
+        <li><span class="step-num">5</span><span>作戦会議スタート✨</span></li>
+      </ol>
+    </div>
+  </div>
+
+</section>
+
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav">
+  <button class="bottom-nav-btn active" onclick="showSection('prompt')">
+    <span class="nav-icon">📷</span>プロンプト
+  </button>
+  <button class="bottom-nav-btn" onclick="showSection('basic')">
+    <span class="nav-icon">📋</span>基本情報
+  </button>
+  <button class="bottom-nav-btn" onclick="showSection('tests')">
+    <span class="nav-icon">📊</span>テスト
+  </button>
+  <button class="bottom-nav-btn" onclick="showSection('works')">
+    <span class="nav-icon">📚</span>ワーク
+  </button>
+  <button class="bottom-nav-btn" onclick="showSection('karte')">
+    <span class="nav-icon">✨</span>カルテ
+  </button>
+</nav>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// =================== STATE ===================
+let state = {
+  examType: '高校受験',
+  school1: '', school2: '', school3: '',
+  privateExamDate: '', publicExamDate1: '', publicExamDate2: '',
+  scheduledTests: [],
+  parentNote: '',
+  testResults: [],
+  works: [],
+};
+
+// Load from localStorage
+function loadState() {
+  const saved = localStorage.getItem('kyoichiBase_v1');
+  if (saved) {
+    try {
+      state = { ...state, ...JSON.parse(saved) };
+      applyStateToForm();
+      renderTestResults();
+      renderWorks();
+    } catch(e) {}
+  }
+}
+
+function saveState() {
+  localStorage.setItem('kyoichiBase_v1', JSON.stringify(state));
+}
+
+function applyStateToForm() {
+  const f = (id, val) => { const el = document.getElementById(id); if(el) el.value = val || ''; };
+  f('examType', state.examType);
+  f('school1', state.school1);
+  f('school2', state.school2);
+  f('school3', state.school3);
+  f('privateExamDate', state.privateExamDate);
+  f('publicExamDate1', state.publicExamDate1);
+  f('publicExamDate2', state.publicExamDate2);
+  f('parentNote', state.parentNote);
+
+  // exam type buttons
+  document.querySelectorAll('#section-basic .exam-type-btn').forEach(btn => {
+    btn.classList.toggle('selected', btn.textContent === state.examType);
+  });
+
+  // scheduled tests
+  renderScheduledTests();
+}
+
+// =================== NAV ===================
+function showSection(name) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.bottom-nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('section-' + name).classList.add('active');
+  const navBtns = document.querySelectorAll('.nav-btn');
+  const bottomBtns = document.querySelectorAll('.bottom-nav-btn');
+  const sections = ['prompt','basic','tests','works','karte'];
+  const idx = sections.indexOf(name);
+  if(idx >= 0) {
+    navBtns[idx].classList.add('active');
+    bottomBtns[idx].classList.add('active');
+  }
+}
+
+// =================== TOAST ===================
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// =================== PROMPT ===================
+const PROMPT_TEXT = document.getElementById('promptText').textContent;
+let promptExpanded = false;
+
+function copyToClipboard(text, successMsg) {
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(() => showToast(successMsg)).catch(() => fallbackCopy(text, successMsg));
+  } else {
+    fallbackCopy(text, successMsg);
+  }
+}
+
+function fallbackCopy(text, successMsg) {
+  const ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.cssText = 'position:fixed;top:0;left:0;opacity:0;';
+  document.body.appendChild(ta);
+  ta.focus();
+  ta.select();
+  try {
+    document.execCommand('copy');
+    showToast(successMsg);
+  } catch(e) {
+    showToast('コピーできませんでした。手動で選択してコピーしてください');
+  }
+  document.body.removeChild(ta);
+}
+
+function copyPrompt() {
+  const text = document.getElementById('promptText').textContent.trim();
+  const btn = document.getElementById('copyPromptBtn');
+  copyToClipboard(text, 'プロンプトをコピーしました！ChatGPTに貼り付けてね📋');
+  btn.textContent = '✅ コピーしました！';
+  btn.classList.add('copied');
+  setTimeout(() => {
+    btn.textContent = '📋 プロンプトをコピー';
+    btn.classList.remove('copied');
+  }, 2000);
+}
+
+function togglePrompt() {
+  promptExpanded = !promptExpanded;
+  const el = document.getElementById('promptText');
+  el.classList.toggle('expanded', promptExpanded);
+}
+
+// =================== PASTE PARSE ===================
+function parsePaste() {
+  const text = document.getElementById('gptPasteArea').value.trim();
+  if (!text) { showToast('テキストを貼り付けてください'); return; }
+
+  const sections = text.split(/---+/).map(s => s.trim()).filter(Boolean);
+  let added = 0;
+
+  sections.forEach(sec => {
+    const get = (key) => {
+      const m = sec.match(new RegExp('【' + key + '】(.+)'));
+      return m ? m[1].trim() : '';
+    };
+    const type = get('種別');
+
+    if (type === '模試' || type === '定期テスト' || type === '実力テスト') {
+      const result = {
+        id: Date.now() + Math.random(),
+        type: type,
+        name: get('模試名') || get('テスト名') || type,
+        date: get('実施日'),
+        kokugo: get('国語').replace('点','') || '',
+        sugaku: get('数学').replace('点','') || '',
+        eigo: get('英語').replace('点','') || '',
+        rika: get('理科').replace('点','') || '',
+        shakai: get('社会').replace('点','') || '',
+        sansu: get('算数').replace('点','') || '',
+        total: get('合計').replace('点','') || '',
+        deviation: get('偏差値') || '',
+        rank: get('学年順位').replace('位','') || '',
+        judge: get('志望校判定') || '',
+        memo: get('メモ') || '',
+      };
+      state.testResults.unshift(result);
+      added++;
+    }
+
+    if (type === 'ワーク') {
+      const work = {
+        id: Date.now() + Math.random(),
+        name: get('ワーク名'),
+        subject: get('教科'),
+        pages: get('総ページ数').replace('ページ',''),
+        publisher: get('出版社'),
+      };
+      if (work.name) { state.works.push(work); added++; }
+    }
+
+    if (type === 'スケジュール') {
+      // Add to parentNote as memo
+      state.parentNote = (state.parentNote ? state.parentNote + '\n\n' : '') + '【スケジュール情報】\n' + sec.replace(/【種別】スケジュール\n?/, '').replace('【内容】\n','');
+      added++;
+    }
+  });
+
+  if (added > 0) {
+    saveState();
+    renderTestResults();
+    renderWorks();
+    applyStateToForm();
+    document.getElementById('gptPasteArea').value = '';
+    showToast('✅ ' + added + '件のデータを取り込みました！');
+  } else {
+    showToast('データを読み取れませんでした。形式を確認してください');
+  }
+}
+
+// =================== BASIC INFO ===================
+function selectExamType(btn, type) {
+  document.querySelectorAll('#section-basic .exam-type-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  state.examType = type;
+  document.getElementById('examType').value = type;
+}
+
+function saveBasic() {
+  state.school1 = document.getElementById('school1').value;
+  state.school2 = document.getElementById('school2').value;
+  state.school3 = document.getElementById('school3').value;
+  state.privateExamDate = document.getElementById('privateExamDate').value;
+  state.publicExamDate1 = document.getElementById('publicExamDate1').value;
+  state.publicExamDate2 = document.getElementById('publicExamDate2').value;
+  state.parentNote = document.getElementById('parentNote').value;
+  saveState();
+  showToast('✅ 基本情報を保存しました！');
+}
+
+// =================== SCHEDULED TESTS ===================
+function addScheduledTest() {
+  state.scheduledTests.push({ type: '模試', name: '', date: '' });
+  renderScheduledTests();
+}
+
+function renderScheduledTests() {
+  const container = document.getElementById('scheduledTests');
+  if (state.scheduledTests.length === 0) {
+    container.innerHTML = '';
+    return;
+  }
+  container.innerHTML = state.scheduledTests.map((t, i) => `
+    <div style="background:var(--bg);border-radius:10px;padding:12px;margin-bottom:10px;border:1.5px solid var(--border);">
+      <div style="display:flex;gap:8px;margin-bottom:8px;">
+        <select onchange="updateScheduledTest(${i},'type',this.value)" style="flex:1;padding:8px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit;background:white;">
+          <option ${t.type==='模試'?'selected':''}>模試</option>
+          <option ${t.type==='定期テスト'?'selected':''}>定期テスト</option>
+          <option ${t.type==='実力テスト'?'selected':''}>実力テスト</option>
+        </select>
+        <button onclick="removeScheduledTest(${i})" style="background:none;border:none;color:var(--text-muted);font-size:18px;cursor:pointer;padding:4px;">✕</button>
+      </div>
+      <input type="text" value="${t.name}" placeholder="テスト名（任意）" onchange="updateScheduledTest(${i},'name',this.value)" style="width:100%;padding:8px 10px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;margin-bottom:8px;font-family:inherit;">
+      <input type="date" value="${t.date}" onchange="updateScheduledTest(${i},'date',this.value)" style="width:100%;padding:8px 10px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit;">
+    </div>
+  `).join('');
+}
+
+function updateScheduledTest(i, key, val) {
+  state.scheduledTests[i][key] = val;
+  saveState();
+}
+function removeScheduledTest(i) {
+  state.scheduledTests.splice(i, 1);
+  renderScheduledTests();
+  saveState();
+}
+
+// =================== TEST RESULTS ===================
+function selectTestType(btn, type) {
+  document.querySelectorAll('#testTypeRow .exam-type-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  document.getElementById('newTestType').value = type;
+}
+
+function addTestResult() {
+  const name = document.getElementById('newTestName').value.trim();
+  if (!name) { showToast('テスト名を入力してください'); return; }
+
+  const result = {
+    id: Date.now(),
+    type: document.getElementById('newTestType').value,
+    name: name,
+    date: document.getElementById('newTestDate').value,
+    kokugo: document.getElementById('s_kokugo').value,
+    sugaku: document.getElementById('s_sugaku').value,
+    eigo: document.getElementById('s_eigo').value,
+    rika: document.getElementById('s_rika').value,
+    shakai: document.getElementById('s_shakai').value,
+    sansu: document.getElementById('s_sansu').value,
+    total: document.getElementById('newTestTotal').value,
+    deviation: document.getElementById('newTestDeviation').value,
+    rank: document.getElementById('newTestRank').value,
+    judge: document.getElementById('newTestJudge').value,
+    memo: document.getElementById('newTestMemo').value,
+  };
+
+  state.testResults.unshift(result);
+  saveState();
+  renderTestResults();
+
+  // Clear form
+  ['newTestName','newTestDate','s_kokugo','s_sugaku','s_eigo','s_rika','s_shakai','s_sansu','newTestTotal','newTestDeviation','newTestRank','newTestJudge','newTestMemo'].forEach(id => {
+    document.getElementById(id).value = '';
+  });
+
+  showToast('✅ テスト結果を追加しました！');
+}
+
+function renderTestResults() {
+  const container = document.getElementById('testResultsList');
+  if (!state.testResults || state.testResults.length === 0) {
+    container.innerHTML = '<div class="empty-state"><div class="empty-icon">📊</div>テスト結果がまだありません</div>';
+    return;
+  }
+
+  const badgeClass = { '模試': 'moshi', '定期テスト': 'teiki', '実力テスト': 'jitsuryoku' };
+  const subjects = [
+    {key:'kokugo',label:'国語'},{key:'sugaku',label:'数学'},{key:'eigo',label:'英語'},
+    {key:'rika',label:'理科'},{key:'shakai',label:'社会'},{key:'sansu',label:'算数'}
+  ];
+
+  container.innerHTML = state.testResults.map((r, i) => {
+    const scores = subjects.filter(s => r[s.key]).map(s => `<span style="margin-right:10px;font-size:13px;"><b style="color:var(--text-light);font-size:11px;">${s.label}</b> <b style="font-size:15px;">${r[s.key]}</b><span style="font-size:11px;">点</span></span>`).join('');
+    const extras = [
+      r.total ? `合計：${r.total}点` : '',
+      r.deviation ? `偏差値：${r.deviation}` : '',
+      r.rank ? `学年${r.rank}位` : '',
+      r.judge ? `判定：${r.judge}` : '',
+    ].filter(Boolean).join('　');
+
+    return `
+    <div class="test-item">
+      <div class="test-item-header">
+        <div>
+          <span class="test-type-badge ${badgeClass[r.type]||''}">${r.type}</span>
+          <span style="font-size:13px;font-weight:700;margin-left:8px;">${r.name}</span>
+        </div>
+        <button class="work-delete" onclick="removeTestResult(${i})">✕</button>
+      </div>
+      ${r.date ? `<div style="font-size:11px;color:var(--text-muted);margin-bottom:8px;">📅 ${r.date}</div>` : ''}
+      <div style="flex-wrap:wrap;display:flex;">${scores}</div>
+      ${extras ? `<div style="font-size:12px;color:var(--text-light);margin-top:6px;">${extras}</div>` : ''}
+      ${r.memo ? `<div style="font-size:12px;color:var(--text-muted);margin-top:6px;font-style:italic;">💭 ${r.memo}</div>` : ''}
+    </div>`;
+  }).join('');
+}
+
+function removeTestResult(i) {
+  if (!confirm('このテスト結果を削除しますか？')) return;
+  state.testResults.splice(i, 1);
+  saveState();
+  renderTestResults();
+  showToast('削除しました');
+}
+
+// =================== WORKS ===================
+const subjectEmoji = { '国語':'📗','数学':'📘','英語':'📙','理科':'🔬','社会':'🌍','算数':'🔢','その他':'📓' };
+
+function addWork() {
+  const name = document.getElementById('newWorkName').value.trim();
+  if (!name) { showToast('ワーク名を入力してください'); return; }
+
+  const work = {
+    id: Date.now(),
+    name: name,
+    subject: document.getElementById('newWorkSubject').value,
+    pages: document.getElementById('newWorkPages').value,
+    publisher: document.getElementById('newWorkPublisher').value,
+  };
+
+  state.works.push(work);
+  saveState();
+  renderWorks();
+
+  document.getElementById('newWorkName').value = '';
+  document.getElementById('newWorkPages').value = '';
+  document.getElementById('newWorkPublisher').value = '';
+
+  showToast('✅ ワークを登録しました！');
+}
+
+function renderWorks() {
+  const container = document.getElementById('worksList');
+  if (!state.works || state.works.length === 0) {
+    container.innerHTML = '<div class="empty-state"><div class="empty-icon">📚</div>ワークがまだ登録されていません</div>';
+    return;
+  }
+  container.innerHTML = state.works.map((w, i) => `
+    <div class="work-item">
+      <div class="work-icon">${subjectEmoji[w.subject] || '📓'}</div>
+      <div class="work-info">
+        <div class="work-name">${w.name}</div>
+        <div class="work-subject">${w.subject}${w.pages ? '　' + w.pages + 'ページ' : ''}${w.publisher ? '　' + w.publisher : ''}</div>
+      </div>
+      <button class="work-delete" onclick="removeWork(${i})">✕</button>
+    </div>
+  `).join('');
+}
+
+function removeWork(i) {
+  if (!confirm('このワークを削除しますか？')) return;
+  state.works.splice(i, 1);
+  saveState();
+  renderWorks();
+  showToast('削除しました');
+}
+
+// =================== KARTE ===================
+function generateKarte() {
+  const today = new Date().toLocaleDateString('ja-JP', {year:'numeric',month:'long',day:'numeric'});
+  const subjects = [
+    {key:'kokugo',label:'国語'},{key:'sugaku',label:'数学'},{key:'eigo',label:'英語'},
+    {key:'rika',label:'理科'},{key:'shakai',label:'社会'},{key:'sansu',label:'算数'}
+  ];
+
+  let karte = `════════════════════════════════
+📋 学習カルテ（きょういちベース）
+作成日：${today}
+════════════════════════════════
+
+【受験タイプ】
+${state.examType}
+
+【志望校】
+第1志望：${state.school1 || '未入力'}
+${state.school2 ? '第2志望：' + state.school2 : ''}
+${state.school3 ? '第3志望：' + state.school3 : ''}
+
+【受験日程】
+${state.privateExamDate ? '私立受験日：' + state.privateExamDate : ''}
+${state.publicExamDate1 ? '公立受験日（前期）：' + state.publicExamDate1 : ''}
+${state.publicExamDate2 ? '公立受験日（後期）：' + state.publicExamDate2 : ''}
+`;
+
+  if (state.scheduledTests && state.scheduledTests.length > 0) {
+    karte += `
+【今後の試験予定】
+`;
+    state.scheduledTests.forEach(t => {
+      karte += `・${t.type}${t.name ? '（' + t.name + '）' : ''}${t.date ? '：' + t.date : ''}\n`;
+    });
+  }
+
+  if (state.testResults && state.testResults.length > 0) {
+    karte += `
+【テスト結果（直近${Math.min(state.testResults.length, 5)}回）】
+`;
+    state.testResults.slice(0, 5).forEach(r => {
+      karte += `\n■ ${r.type}：${r.name}${r.date ? '（' + r.date + '）' : ''}\n`;
+      const scores = subjects.filter(s => r[s.key]).map(s => `${s.label}${r[s.key]}点`).join('・');
+      if (scores) karte += `  ${scores}\n`;
+      if (r.total) karte += `  合計：${r.total}点\n`;
+      if (r.deviation) karte += `  偏差値：${r.deviation}\n`;
+      if (r.rank) karte += `  学年順位：${r.rank}位\n`;
+      if (r.judge) karte += `  志望校判定：${r.judge}\n`;
+      if (r.memo) karte += `  メモ：${r.memo}\n`;
+    });
+  }
+
+  if (state.works && state.works.length > 0) {
+    karte += `
+【登録ワーク一覧】
+`;
+    state.works.forEach(w => {
+      karte += `・${w.subject}：${w.name}${w.pages ? '（全' + w.pages + 'P）' : ''}${w.publisher ? '／' + w.publisher : ''}\n`;
+    });
+    karte += `※ワークの活用状況はヒアリングして確認してください。\n`;
+  }
+
+  if (state.parentNote) {
+    karte += `
+【保護者からのメモ・気づき】
+${state.parentNote}
+`;
+  }
+
+  karte += `
+════════════════════════════════
+このカルテは「きょういちベース」で作成されました。
+「今日の1コ伴走プランナー（きょういちプランナー）」に貼り付けて使ってください。
+════════════════════════════════`;
+
+  document.getElementById('karteText').textContent = karte;
+  document.getElementById('karteOutput').style.display = 'block';
+  document.getElementById('karteOutput').scrollIntoView({ behavior: 'smooth' });
+  showToast('✅ 学習カルテを生成しました！');
+}
+
+function copyKarte() {
+  const text = document.getElementById('karteText').textContent;
+  copyToClipboard(text, '📋 カルテをコピーしました！きょういちに貼り付けてね✨');
+}
+
+function downloadKarte() {
+  const text = document.getElementById('karteText').textContent;
+  const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'きょういちベース_学習カルテ_' + new Date().toLocaleDateString('ja-JP').replace(/\//g,'-') + '.txt';
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('💾 カルテを保存しました');
+}
+
+// =================== INIT ===================
+loadState();
+</script>
+</body>
+</html>
