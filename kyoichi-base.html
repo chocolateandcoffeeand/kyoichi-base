@@ -176,6 +176,40 @@ textarea { resize: vertical; min-height: 80px; }
 .bnav-btn.active { color: var(--primary); }
 
 .empty-state { text-align: center; padding: 30px 20px; color: var(--text-muted); font-size: 13px; }
+
+/* カウントダウン */
+.countdown-card { background: linear-gradient(135deg, #1A1A2E, #16213E); border-radius: var(--radius); padding: 20px; margin-bottom: 16px; text-align: center; position: relative; }
+.countdown-label { font-size: 12px; color: rgba(255,255,255,0.6); margin-bottom: 8px; }
+.countdown-event { font-family: 'Zen Maru Gothic', sans-serif; font-size: 16px; font-weight: 700; color: white; margin-bottom: 12px; }
+.countdown-num { font-family: 'Zen Maru Gothic', sans-serif; font-size: 56px; font-weight: 700; color: var(--primary-light); line-height: 1; }
+.countdown-unit { font-size: 14px; color: rgba(255,255,255,0.7); margin-top: 4px; }
+.countdown-today { font-size: 20px; font-weight: 700; color: var(--success); }
+.countdown-select-btn { background: rgba(255,255,255,0.15); color: white; border: none; border-radius: 8px; padding: 8px 14px; font-size: 12px; font-weight: 700; cursor: pointer; font-family: inherit; margin-top: 12px; }
+.countdown-event-list { list-style: none; margin-top: 12px; }
+.countdown-event-item { display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; border-radius: 10px; margin-bottom: 8px; background: var(--bg); border: 1.5px solid var(--border); cursor: pointer; transition: all 0.2s; }
+.countdown-event-item:hover, .countdown-event-item.selected { border-color: var(--primary); background: #FFF0EC; }
+.countdown-event-name { font-size: 13px; font-weight: 700; color: var(--text); }
+.countdown-event-date { font-size: 12px; color: var(--text-muted); }
+.countdown-event-days { font-size: 13px; font-weight: 700; color: var(--primary); }
+
+/* 前回比較 */
+.diff-positive { color: #E53E3E; font-weight: 700; }
+.diff-negative { color: #3182CE; font-weight: 700; }
+.diff-zero { color: var(--text-muted); font-weight: 700; }
+.test-diff-row { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+.test-diff-item { font-size: 12px; padding: 2px 8px; border-radius: 10px; background: var(--bg); border: 1px solid var(--border); }
+
+/* ヘルプモーダル */
+.help-modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 600; align-items: flex-end; }
+.help-modal-overlay.show { display: flex; }
+.help-modal { background: white; border-radius: 20px 20px 0 0; padding: 24px 20px; width: 100%; max-height: 85vh; overflow-y: auto; }
+.help-section { margin-bottom: 20px; }
+.help-section-title { font-family: 'Zen Maru Gothic', sans-serif; font-size: 14px; font-weight: 700; color: var(--primary); margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
+.help-step { display: flex; gap: 10px; margin-bottom: 10px; align-items: flex-start; }
+.help-step-num { width: 24px; height: 24px; background: var(--primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0; }
+.help-step-text { font-size: 13px; color: var(--text); line-height: 1.6; flex: 1; }
+.help-tip { background: linear-gradient(135deg, #FFF0EC, #FFF8F6); border-radius: 10px; padding: 12px; margin-bottom: 8px; font-size: 13px; color: var(--text); line-height: 1.6; border-left: 3px solid var(--primary); }
+.help-btn { position: fixed; bottom: 90px; right: 16px; width: 44px; height: 44px; background: var(--primary); color: white; border: none; border-radius: 50%; font-size: 20px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 12px rgba(255,140,105,0.4); z-index: 199; display: flex; align-items: center; justify-content: center; }
 .empty-icon { font-size: 36px; margin-bottom: 8px; }
 .section-desc { font-size: 13px; color: var(--text-light); line-height: 1.6; margin-bottom: 16px; }
 </style>
@@ -184,7 +218,7 @@ textarea { resize: vertical; min-height: 80px; }
 
 <div class="header">
   <img src="logo.png" alt="きょういちベース">
-  <p>学習カルテを作って、きょういちプランナーに渡そう</p>
+  <p>学習カルテを作って、きょういちに渡そう</p>
 </div>
 
 <!-- 子ども切り替えバー -->
@@ -202,6 +236,9 @@ textarea { resize: vertical; min-height: 80px; }
   <button class="nav-btn" onclick="showTab('works')">📚 ワーク</button>
   <button class="nav-btn" onclick="showTab('karte')">✨ カルテ</button>
 </nav>
+
+<!-- カウントダウン（全タブ共通表示エリア） -->
+<div id="countdownArea" style="padding:12px 16px 0;"></div>
 
 <!-- プロンプト -->
 <section id="tab-prompt" class="section active">
@@ -237,7 +274,7 @@ textarea { resize: vertical; min-height: 80px; }
 <section id="tab-basic" class="section">
   <div class="card">
     <div class="card-title"><span class="icon">👦</span>お子さんの情報</div>
-    <label>あだ名（きょういちプランナーが呼びかけるときに使います）</label>
+    <label>あだ名（きょういちが呼びかけるときに使います）</label>
     <input type="text" id="nickname" placeholder="例：たろう、はなちゃん">
     <label>誕生日</label>
     <input type="date" id="birthday">
@@ -301,6 +338,12 @@ textarea { resize: vertical; min-height: 80px; }
       <div class="cal-legend-item"><div class="cal-legend-dot" style="background:var(--accent-dark);"></div>イベント</div>
     </div>
   </div>
+  <div class="card">
+    <div class="card-title"><span class="icon">⏰</span>カウントダウンするイベントを選ぶ</div>
+    <p class="section-desc">選んだイベントが画面上部にカウントダウン表示されます。</p>
+    <div id="countdownSelectList"><div class="empty-state"><div class="empty-icon">📅</div>日程を登録してください</div></div>
+  </div>
+
   <div class="card">
     <div class="card-title"><span class="icon">📋</span>今後のスケジュール一覧</div>
     <div id="scheduleList"></div>
@@ -441,6 +484,52 @@ textarea { resize: vertical; min-height: 80px; }
     </div>
   </div>
 </section>
+
+<button class="help-btn" onclick="showHelp()" title="使い方">？</button>
+
+<!-- ヘルプモーダル -->
+<div class="help-modal-overlay" id="helpModal" onclick="hideHelp()">
+  <div class="help-modal" onclick="event.stopPropagation()">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+      <div style="font-family:'Zen Maru Gothic',sans-serif;font-size:18px;font-weight:700;color:var(--text);">📖 きょういちベースの使い方</div>
+      <button onclick="hideHelp()" style="background:none;border:none;font-size:24px;cursor:pointer;color:var(--text-muted);">✕</button>
+    </div>
+
+    <div class="help-section">
+      <div class="help-section-title">🚀 基本の流れ</div>
+      <div class="help-step"><div class="help-step-num">1</div><div class="help-step-text"><b>基本情報タブ</b>でお子さんの情報・志望校・受験日程を登録します</div></div>
+      <div class="help-step"><div class="help-step-num">2</div><div class="help-step-text"><b>プロンプトタブ</b>のプロンプトをコピーしてChatGPTを開きます</div></div>
+      <div class="help-step"><div class="help-step-num">3</div><div class="help-step-text">テスト結果・範囲表・ワークの表紙の<b>写真</b>をChatGPTに送ります</div></div>
+      <div class="help-step"><div class="help-step-num">4</div><div class="help-step-text">ChatGPTの返答を<b>プロンプトタブのペーストエリア</b>に貼り付けて「取り込む」を押します</div></div>
+      <div class="help-step"><div class="help-step-num">5</div><div class="help-step-text"><b>カルテタブ</b>で相談目的を選んで「学習カルテを生成」→コピーしてきょういちプランナーに渡します✨</div></div>
+    </div>
+
+    <div class="help-section">
+      <div class="help-section-title">📷 写真で取り込めるもの</div>
+      <div class="help-tip">📊 <b>模試の結果票</b>：点数・偏差値・判定を自動で読み取ります</div>
+      <div class="help-tip">📝 <b>定期テスト・実力テストの結果</b>：教科別点数を読み取ります</div>
+      <div class="help-tip">📋 <b>テスト範囲表</b>：範囲の要点をまとめてくれます</div>
+      <div class="help-tip">📚 <b>ワークの表紙</b>：ワーク名・教科・ページ数を読み取ります</div>
+    </div>
+
+    <div class="help-section">
+      <div class="help-section-title">👦 兄弟で使うとき</div>
+      <div class="help-tip">上部の「＋子どもを追加」から兄弟を登録できます。プルダウンで切り替えると、それぞれのデータが完全に分かれて管理できます。</div>
+    </div>
+
+    <div class="help-section">
+      <div class="help-section-title">⏰ カウントダウン</div>
+      <div class="help-tip">カレンダータブの「カウントダウンするイベントを選ぶ」から選択すると、画面上部にあと何日かが表示されます。きょういちへのカルテにも自動で含まれます。</div>
+    </div>
+
+    <div class="help-section">
+      <div class="help-section-title">⚠️ データについて</div>
+      <div class="help-tip">データはこのブラウザに保存されます。ブラウザのデータを全消去したり機種変更した場合はリセットされます。大切な情報は定期的にカルテを生成してテキストを保存しておくことをおすすめします。</div>
+    </div>
+
+    <button class="btn btn-primary" onclick="hideHelp()" style="margin-top:8px;">閉じる</button>
+  </div>
+</div>
 
 <nav class="bottom-nav">
   <button class="bnav-btn active" onclick="showTab('prompt')"><span class="ni">📷</span>プロンプト</button>
@@ -664,7 +753,7 @@ function showTab(name) {
   var tabs = ['prompt','basic','calendar','tests','works','karte'];
   var i = tabs.indexOf(name);
   if (i >= 0) { document.querySelectorAll('.nav-btn')[i].classList.add('active'); document.querySelectorAll('.bnav-btn')[i].classList.add('active'); }
-  if (name === 'calendar') renderCalendar();
+  if (name === 'calendar') { renderCalendar(); renderCountdownSelectList(); }
   if (name === 'tests') setTimeout(renderGraph, 150);
 }
 
@@ -893,6 +982,12 @@ function addTest() {
   toast('✅ 追加しました！');
 }
 
+function getDiff(cur, prev, key) {
+  var c = Number(cur[key]), p = Number(prev[key]);
+  if(!cur[key]||!prev[key]||isNaN(c)||isNaN(p)) return null;
+  return c - p;
+}
+
 function renderTests() {
   var data = getCurrentData();
   var c = document.getElementById('testList');
@@ -902,9 +997,28 @@ function renderTests() {
   c.innerHTML = data.testResults.map(function(r,i){
     var scores=subs.filter(function(s){return r[s.k];}).map(function(s){ return '<span style="margin-right:8px;font-size:13px;"><b style="color:var(--text-muted);font-size:10px;">'+s.l+'</b> <b>'+r[s.k]+'</b>点</span>'; }).join('');
     var extras=[r.total?'合計:'+r.total+'点':'',r.deviation?'偏差値:'+r.deviation:'',r.rank?'学年'+r.rank+'位':'',r.judge?r.judge:''].filter(Boolean).join(' ');
+    // 前回比較
+    var diffHtml = '';
+    if(r.type !== 'テスト範囲表') {
+      var prev = null;
+      for(var j=i+1;j<data.testResults.length;j++){
+        if(data.testResults[j].type===r.type && data.testResults[j].type!=='テスト範囲表'){ prev=data.testResults[j]; break; }
+      }
+      if(prev) {
+        var diffs = subs.map(function(s){
+          var d=getDiff(r,prev,s.k);
+          if(d===null)return null;
+          var cls=d>0?'diff-positive':d<0?'diff-negative':'diff-zero';
+          var sign=d>0?'↑':d<0?'↓':'→';
+          return '<span class="test-diff-item"><span class="'+cls+'">'+s.l+' '+(d>0?'+':'')+d+'点'+sign+'</span></span>';
+        }).filter(Boolean);
+        if(diffs.length) diffHtml='<div class="test-diff-row">'+diffs.join('')+'</div>';
+      }
+    }
     return '<div class="test-item"><div class="test-item-header"><div><span class="test-badge '+(bc[r.type]||'')+'">'+r.type+'</span>'+(r.grade?'<span class="grade-tag">'+r.grade+'</span>':'')+' <b style="font-size:13px;">'+r.name+'</b></div><button class="del-btn" onclick="delTest('+i+')">✕</button></div>'+
       (r.date?'<div style="font-size:11px;color:var(--text-muted);margin-bottom:8px;">📅 '+r.date+'</div>':'')+
       (scores?'<div style="flex-wrap:wrap;display:flex;">'+scores+'</div>':'')+
+      diffHtml+
       (extras?'<div style="font-size:12px;color:var(--text-light);margin-top:4px;">'+extras+'</div>':'')+
       (r.memo?'<div style="font-size:12px;color:var(--text-muted);margin-top:4px;font-style:italic;white-space:pre-wrap;">💭 '+r.memo+'</div>':'')+
       '</div>';
@@ -1078,7 +1192,16 @@ function generateKarte(){
       else purposes.push(lbl);
     }
   });
-  var t='きょういちプランナーへ：学習カルテを持ってきたよ！\n';
+  // カウントダウン情報をカルテに含める
+  var cdTarget = getCountdownTarget();
+  var cdText = '';
+  if(cdTarget) {
+    var today2 = new Date(); today2.setHours(0,0,0,0);
+    var cdDate = new Date(cdTarget.date); cdDate.setHours(0,0,0,0);
+    var cdDays = Math.round((cdDate-today2)/(1000*60*60*24));
+    if(cdDays >= 0) cdText = '\n【カウントダウン】\n「'+cdTarget.label+'」まであと'+cdDays+'日（'+cdTarget.date+'）\n';
+  }
+  var t='きょういちプランナーへ：学習カルテを持ってきたよ！\n'+cdText;
   if(purposes.length){t+='\n【今日の相談目的】\n';purposes.forEach(function(p){t+='・'+p+'\n';});}
   t+='\n════════════════════════════════\n📋 学習カルテ（きょういちベース）\n作成日：'+today+'\n════════════════════════════════\n';
 
@@ -1125,6 +1248,98 @@ function generateKarte(){
 
 function copyKarte(){copyText(document.getElementById('karteText').textContent,'📋 カルテをコピーしました！きょういちに貼り付けてね✨');}
 
+// =================== カウントダウン ===================
+var countdownKey = 'kyoichiCountdown_' + (allData ? allData.currentChildId : '');
+
+function getCountdownTarget() {
+  try { return JSON.parse(localStorage.getItem('kyoichiCountdown') || 'null'); } catch(e) { return null; }
+}
+function setCountdownTarget(item) {
+  localStorage.setItem('kyoichiCountdown', JSON.stringify(item));
+}
+
+function getAllUpcomingEvents() {
+  var data = getCurrentData();
+  var today = new Date(); today.setHours(0,0,0,0);
+  var events = [];
+  (data.scheduleItems||[]).forEach(function(s){
+    if(!s.date||!s.label) return;
+    var d = new Date(s.date); d.setHours(0,0,0,0);
+    if(d >= today) events.push({label:s.label, date:s.date, days: Math.round((d-today)/(1000*60*60*24))});
+  });
+  (data.testResults||[]).forEach(function(r){
+    if(!r.date) return;
+    var d = new Date(r.date); d.setHours(0,0,0,0);
+    if(d >= today) events.push({label:r.name||r.type, date:r.date, days: Math.round((d-today)/(1000*60*60*24))});
+  });
+  events.sort(function(a,b){ return a.days - b.days; });
+  return events;
+}
+
+function renderCountdownArea() {
+  var area = document.getElementById('countdownArea');
+  if(!area) return;
+  var target = getCountdownTarget();
+  if(!target) { area.innerHTML=''; return; }
+  var today = new Date(); today.setHours(0,0,0,0);
+  var targetDate = new Date(target.date); targetDate.setHours(0,0,0,0);
+  var days = Math.round((targetDate - today)/(1000*60*60*24));
+  var html = '<div class="countdown-card">';
+  html += '<div class="countdown-label">📅 カウントダウン</div>';
+  html += '<div class="countdown-event">' + target.label + '</div>';
+  if(days > 0) {
+    html += '<div class="countdown-num">' + days + '</div>';
+    html += '<div class="countdown-unit">日後（' + target.date + '）</div>';
+  } else if(days === 0) {
+    html += '<div class="countdown-today">🎯 今日です！</div>';
+  } else {
+    html += '<div style="color:rgba(255,255,255,0.5);font-size:14px;">終了（' + Math.abs(days) + '日前）</div>';
+  }
+  html += '</div>';
+  area.innerHTML = html;
+}
+
+function renderCountdownSelectList() {
+  var el = document.getElementById('countdownSelectList');
+  if(!el) return;
+  var events = getAllUpcomingEvents();
+  var target = getCountdownTarget();
+  if(!events.length) { el.innerHTML='<div class="empty-state"><div class="empty-icon">📅</div>今後の日程がありません</div>'; return; }
+  var html = '';
+  events.forEach(function(ev, idx){
+    var isSelected = target && target.label===ev.label && target.date===ev.date;
+    html += '<div class="countdown-event-item' + (isSelected?' selected':'') + '" data-label="' + ev.label.replace(/"/g,'&quot;') + '" data-date="' + ev.date + '" onclick="handleCountdownSelect(this)">';
+    html += '<div><div class="countdown-event-name">' + (isSelected?'⏰ ':'') + ev.label + '</div><div class="countdown-event-date">' + ev.date + '</div></div>';
+    html += '<div class="countdown-event-days">あと' + ev.days + '日</div>';
+    html += '</div>';
+  });
+  el.innerHTML = html;
+}
+
+function handleCountdownSelect(el) {
+  var label = el.getAttribute('data-label');
+  var date = el.getAttribute('data-date');
+  selectCountdown(label, date);
+}
+
+
+function selectCountdown(label, date) {
+  var current = getCountdownTarget();
+  if(current && current.label===label && current.date===date) {
+    localStorage.removeItem('kyoichiCountdown');
+    toast('カウントダウンを解除しました');
+  } else {
+    setCountdownTarget({label:label, date:date});
+    toast('⏰ 「'+label+'」をカウントダウンに設定しました！');
+  }
+  renderCountdownArea();
+  renderCountdownSelectList();
+}
+
+// =================== ヘルプ ===================
+function showHelp() { document.getElementById('helpModal').classList.add('show'); }
+function hideHelp() { document.getElementById('helpModal').classList.remove('show'); }
+
 // =================== 初期化 ===================
 loadAllData();
 updateChildBar();
@@ -1136,6 +1351,7 @@ renderGradeFilter();
 initCal();
 document.getElementById('promptTextarea').value = PROMPT;
 setTimeout(renderGraph, 200);
+renderCountdownArea();
 </script>
 </body>
 </html>
