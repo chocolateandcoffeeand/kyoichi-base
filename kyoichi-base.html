@@ -259,16 +259,6 @@ textarea { resize: vertical; min-height: 80px; }
       <button class="prompt-expand-btn" onclick="expandPrompt()">👁 全文を見る</button>
     </div>
   </div>
-  <div class="card" style="border:2px solid var(--accent);">
-    <div class="card-title"><span class="icon" style="background:linear-gradient(135deg,var(--accent),var(--accent-dark));">📲</span>カルテからインポート</div>
-    <p class="section-desc">保護者が作ったカルテをここにペーストすると、名前・志望校・スケジュール・テスト結果などが自動で取り込まれます。</p>
-    <div class="paste-area">
-      <p class="paste-hint">👇 カルテのテキストをここにペースト</p>
-      <textarea id="kartePaste" placeholder="きょういちプランナーへ：学習カルテを持ってきたよ！&#10;..."></textarea>
-    </div>
-    <button class="btn btn-accent" onclick="importFromKarte()">📲 カルテからインポート</button>
-  </div>
-
   <div class="card">
     <div class="card-title"><span class="icon">📥</span>ChatGPTの返答を取り込む</div>
     <p class="section-desc">ChatGPTが返してくれたテキストをそのまま貼り付けてください。</p>
@@ -492,6 +482,24 @@ textarea { resize: vertical; min-height: 80px; }
       <div class="karte-box"><pre class="karte-text" id="karteText"></pre></div>
       <button class="karte-copy-btn" onclick="copyKarte()">📋 カルテをコピーしてきょういちに渡す</button>
     </div>
+  </div>
+
+  <div class="card" style="border:1.5px dashed var(--accent);background:linear-gradient(135deg,#E6FFFA,#F0FFFE);">
+    <div class="card-title"><span class="icon" style="background:linear-gradient(135deg,var(--accent),var(--accent-dark));">📲</span>別端末と共有する</div>
+    <p class="section-desc">上のカルテをコピーして、別のスマホのきょういちベースに貼り付けると、名前・志望校・テスト結果などの情報を引き継げます。</p>
+    <div style="background:white;border-radius:10px;padding:12px;margin-bottom:12px;border:1px solid var(--border);font-size:13px;color:var(--text-light);line-height:1.7;">
+      <b style="color:var(--accent-dark);">使い方</b><br>
+      ① 上の「カルテをコピー」を押す<br>
+      ② 別のスマホできょういちベースを開く<br>
+      ③ このカードの下のエリアに貼り付ける<br>
+      ④「取り込む」を押す
+    </div>
+    <p style="font-size:12px;font-weight:700;color:var(--accent-dark);margin-bottom:8px;">👇 別端末で作ったカルテをここにペースト</p>
+    <div class="paste-area">
+      <p class="paste-hint">カルテのテキストをここにペースト...</p>
+      <textarea id="kartePaste" placeholder="きょういちプランナーへ：学習カルテを持ってきたよ！&#10;..."></textarea>
+    </div>
+    <button class="btn btn-accent" onclick="importFromKarte()">📲 情報を取り込む</button>
   </div>
 </section>
 
