@@ -259,6 +259,16 @@ textarea { resize: vertical; min-height: 80px; }
       <button class="prompt-expand-btn" onclick="expandPrompt()">👁 全文を見る</button>
     </div>
   </div>
+  <div class="card" style="border:2px solid var(--accent);">
+    <div class="card-title"><span class="icon" style="background:linear-gradient(135deg,var(--accent),var(--accent-dark));">📲</span>カルテからインポート</div>
+    <p class="section-desc">保護者が作ったカルテをここにペーストすると、名前・志望校・スケジュール・テスト結果などが自動で取り込まれます。</p>
+    <div class="paste-area">
+      <p class="paste-hint">👇 カルテのテキストをここにペースト</p>
+      <textarea id="kartePaste" placeholder="きょういちプランナーへ：学習カルテを持ってきたよ！&#10;..."></textarea>
+    </div>
+    <button class="btn btn-accent" onclick="importFromKarte()">📲 カルテからインポート</button>
+  </div>
+
   <div class="card">
     <div class="card-title"><span class="icon">📥</span>ChatGPTの返答を取り込む</div>
     <p class="section-desc">ChatGPTが返してくれたテキストをそのまま貼り付けてください。</p>
@@ -1247,6 +1257,154 @@ function generateKarte(){
 }
 
 function copyKarte(){copyText(document.getElementById('karteText').textContent,'📋 カルテをコピーしました！きょういちに貼り付けてね✨');}
+
+// =================== カルテインポート ===================
+function importFromKarte() {
+  var text = document.getElementById('kartePaste').value.trim();
+  if (!text) { toast('カルテのテキストを貼り付けてください'); return; }
+  if (text.indexOf('学習カルテ') === -1 && text.indexOf('きょういちベース') === -1) {
+    toast('カルテのテキストではないようです'); return;
+  }
+
+  var data = getCurrentData();
+  var updated = [];
+
+  function getLine(key) {
+    var lines = text.split('\n');
+    for (var i = 0; i < lines.length; i++) {
+      if (lines[i].indexOf(key) !== -1) {
+        return lines[i].replace(key, '').replace('：','').replace(':','').trim();
+      }
+    }
+    return null;
+  }
+
+  function getSection(key) {
+    var idx = text.indexOf(key);
+    if (idx === -1) return null;
+    var start = idx + key.length;
+    var next = text.indexOf('\n\u3010', start);
+    var end2 = text.indexOf('\u2550\u2550\u2550\u2550', start);
+    if (next === -1) next = end2;
+    if (end2 !== -1 && end2 < next) next = end2;
+    return next === -1 ? text.substring(start) : text.substring(start, next);
+  }
+
+  // あだ名
+  var nickname = getLine('あだ名：') || getLine('あだ名:');
+  if (nickname) { data.nickname = nickname; if(currentChild) currentChild.name = nickname; updated.push('あだ名'); }
+
+  // 受験タイプ
+  if (text.indexOf('高校受験') !== -1) { data.examType = '高校受験'; }
+  else if (text.indexOf('中学受験') !== -1) { data.examType = '中学受験'; }
+
+  // 志望校
+  var s1 = getLine('第1志望：') || getLine('第1志望:');
+  if (s1) { data.school1 = s1; updated.push('第1志望校'); }
+  var s2 = getLine('第2志望：') || getLine('第2志望:');
+  if (s2) { data.school2 = s2; updated.push('第2志望校'); }
+  var s3 = getLine('第3志望：') || getLine('第3志望:');
+  if (s3) { data.school3 = s3; updated.push('第3志望校'); }
+
+  // 受験日程・イベント
+  var schedSec = getSection('【受験日程・イベント】');
+  if (schedSec) {
+    var slines = schedSec.trim().split('\n');
+    slines.forEach(function(line) {
+      var m = line.match(/(.+)[：:](\d{4}-\d{2}-\d{2})/);
+      if (!m) return;
+      var label = m[1].trim(); var date = m[2].trim();
+      var exists = (data.scheduleItems||[]).some(function(s){ return s.label===label && s.date===date; });
+      if (!exists) {
+        data.scheduleItems = data.scheduleItems || [];
+        data.scheduleItems.push({label:label, date:date, type:'other'});
+        updated.push('日程:'+label);
+      }
+    });
+  }
+
+  // テスト結果
+  var testSec = getSection('【テスト結果');
+  if (testSec) {
+    var subs = [{k:'kokugo',l:'国語'},{k:'sugaku',l:'数学'},{k:'eigo',l:'英語'},{k:'rika',l:'理科'},{k:'shakai',l:'社会'},{k:'sansu',l:'算数'}];
+    var blocks = testSec.split('\u25a0 ');
+    blocks.forEach(function(block) {
+      if (!block.trim()) return;
+      var firstLine = block.split('\n')[0];
+      var nameM = firstLine.match(/^([^（\[]+)/);
+      if (!nameM) return;
+      var tname = nameM[1].trim().replace(/[：:].*$/,'').trim();
+      if (!tname) return;
+      var dateM = firstLine.match(/（(.+?)）/);
+      var tdate = dateM ? dateM[1] : '';
+      var gradeM = firstLine.match(/\[(.+?)\]/);
+      var tgrade = gradeM ? gradeM[1] : '';
+      var exists = (data.testResults||[]).some(function(r){ return r.name===tname; });
+      if (exists) return;
+      var result = {id:Date.now()+Math.random(), type:'模試', name:tname, grade:tgrade, date:tdate, memo:''};
+      if (block.indexOf('定期テスト') !== -1) result.type = '定期テスト';
+      else if (block.indexOf('実力テスト') !== -1) result.type = '実力テスト';
+      else if (block.indexOf('テスト範囲表') !== -1) result.type = 'テスト範囲表';
+      subs.forEach(function(s){
+        var sm = block.match(new RegExp(s.l + '(\d+)点'));
+        if (sm) result[s.k] = sm[1];
+      });
+      var totalM = block.match(/合計[：:]\s*(\d+)点/);
+      if (totalM) result.total = totalM[1];
+      var devM = block.match(/偏差値[：:]\s*([\d.]+)/);
+      if (devM) result.deviation = devM[1];
+      var memoM = block.match(/メモ[：:]\s*(.+)/);
+      if (memoM) result.memo = memoM[1];
+      data.testResults = data.testResults || [];
+      data.testResults.unshift(result);
+      updated.push('テスト:'+tname);
+    });
+  }
+
+  // ワーク
+  var workSec = getSection('【登録ワーク一覧】');
+  if (workSec) {
+    var wlines = workSec.trim().split('\n');
+    wlines.forEach(function(line) {
+      var m = line.match(/^[・\-]\s*(.+?)[：:](.+?)(?:（全(\d+)P）)?(?:／(.+))?$/);
+      if (!m) return;
+      var wsubject = m[1].trim(); var wname = m[2].trim();
+      var wpages = m[3]||''; var wpublisher = m[4]||'';
+      var exists = (data.works||[]).some(function(w){ return w.name===wname; });
+      if (!exists) {
+        data.works = data.works || [];
+        data.works.push({id:Date.now()+Math.random(), name:wname, subject:wsubject, pages:wpages, publisher:wpublisher});
+        updated.push('ワーク:'+wname);
+      }
+    });
+  }
+
+  // 保護者メモ
+  var noteSec = getSection('【保護者からのメモ】');
+  if (noteSec) {
+    var newNote = noteSec.trim();
+    if (newNote && newNote !== data.parentNote) {
+      data.parentNote = data.parentNote ? data.parentNote + '\n\n---\n' + newNote : newNote;
+      updated.push('保護者メモ');
+    }
+  }
+
+  if (updated.length > 0) {
+    saveCurrentData(data);
+    saveAllData();
+    updateChildBar();
+    applyToForm();
+    renderTests();
+    renderWorks();
+    renderGradeFilter();
+    setTimeout(renderGraph, 150);
+    document.getElementById('kartePaste').value = '';
+    toast('✅ ' + updated.length + '件インポートしました！');
+    
+  } else {
+    toast('新しいデータはありませんでした');
+  }
+}
 
 // =================== カウントダウン ===================
 var countdownKey = 'kyoichiCountdown_' + (allData ? allData.currentChildId : '');
