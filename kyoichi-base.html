@@ -801,14 +801,8 @@ function parsePaste() {
     }
   }
 
-  var rawSections = parseText.split('---');
   var sections = [];
-  for (var si = 0; si < rawSections.length; si++) {
-    var s = rawSections[si].trim();
-    if (s && s.indexOf('\u300a\u7a2e\u5225\u300b') !== -1) sections.push(s);
-    else if (s && s.indexOf('\u300a\u30ef\u30fc\u30af\u540d\u300b') !== -1) sections.push(s);
-  }
-  if (sections.length === 0 && parseText.indexOf('\u300a\u7a2e\u5225\u300b') !== -1) {
+  if (parseText.indexOf('【種別】') !== -1) {
     sections = [parseText.trim()];
   }
 
@@ -817,48 +811,51 @@ function parsePaste() {
 
   for (var i = 0; i < sections.length; i++) {
     var sec = sections[i];
+
     var getVal = function(k) {
-      var tag = '\u300a' + k + '\u300b';
+      var tag = '【' + k + '】';
       var p = sec.indexOf(tag);
       if (p === -1) return '';
       var s2 = p + tag.length;
       var e2 = sec.indexOf('\n', s2);
       return (e2 === -1 ? sec.substring(s2) : sec.substring(s2, e2)).trim();
     };
-    var memoTag = '\u300a\u30e1\u30e2\u300b';
-    var mi = sec.indexOf(memoTag);
-    var memo = mi === -1 ? '' : sec.substring(mi + memoTag.length).trim();
-    var type = getVal('\u7a2e\u5225');
 
-    if (type === '\u6a21\u8a66' || type === '\u5b9a\u671f\u30c6\u30b9\u30c8' || type === '\u5b9f\u529b\u30c6\u30b9\u30c8' || type === '\u30c6\u30b9\u30c8\u7bc4\u56f2\u8868') {
+    var mi = sec.indexOf('【メモ】');
+    var memo = mi === -1 ? '' : sec.substring(mi + 5).trim();
+    var type = getVal('種別');
+
+    if (type === '模試' || type === '定期テスト' || type === '実力テスト' || type === 'テスト範囲表') {
       data.testResults.unshift({
         id: Date.now() + Math.random(),
-        type: type, grade: currentChild ? currentChild.grade : '',
-        name: getVal('\u6a21\u8a66\u540d') || getVal('\u30c6\u30b9\u30c8\u540d') || type,
-        date: getVal('\u5b9f\u65bd\u65e5'),
-        kokugo: getVal('\u56fd\u8a9e').replace('\u70b9', ''),
-        sugaku: getVal('\u6570\u5b66').replace('\u70b9', ''),
-        eigo: getVal('\u82f1\u8a9e').replace('\u70b9', ''),
-        rika: getVal('\u7406\u79d1').replace('\u70b9', ''),
-        shakai: getVal('\u793e\u4f1a').replace('\u70b9', ''),
-        sansu: getVal('\u7b97\u6570').replace('\u70b9', ''),
-        total: getVal('\u5408\u8a08').replace('\u70b9', ''),
-        deviation: getVal('\u504f\u5dee\u5024'),
-        rank: getVal('\u5b66\u5e74\u9806\u4f4d').replace('\u4f4d', ''),
-        judge: getVal('\u5fd7\u671b\u6821\u5224\u5b9a'),
+        type: type,
+        grade: currentChild ? currentChild.grade : '',
+        name: getVal('模試名') || getVal('テスト名') || type,
+        date: getVal('実施日'),
+        kokugo: getVal('国語').replace('点', ''),
+        sugaku: getVal('数学').replace('点', ''),
+        eigo: getVal('英語').replace('点', ''),
+        rika: getVal('理科').replace('点', ''),
+        shakai: getVal('社会').replace('点', ''),
+        sansu: getVal('算数').replace('点', ''),
+        total: getVal('合計').replace('点', ''),
+        deviation: getVal('偏差値'),
+        rank: getVal('学年順位').replace('位', ''),
+        judge: getVal('志望校判定'),
         memo: memo
       });
       added++;
     }
-    if (type === '\u30ef\u30fc\u30af') {
-      var wn = getVal('\u30ef\u30fc\u30af\u540d');
+
+    if (type === 'ワーク') {
+      var wn = getVal('ワーク名');
       if (wn) {
         data.works.push({
           id: Date.now() + Math.random(),
           name: wn,
-          subject: getVal('\u6559\u79d1'),
-          pages: getVal('\u7dcf\u30da\u30fc\u30b8\u6570').replace('\u30da\u30fc\u30b8', ''),
-          publisher: getVal('\u51fa\u7248\u793e')
+          subject: getVal('教科'),
+          pages: getVal('総ページ数').replace('ページ', ''),
+          publisher: getVal('出版社')
         });
         added++;
       }
@@ -870,9 +867,9 @@ function parsePaste() {
     renderTests(); renderWorks(); renderGradeFilter();
     setTimeout(renderGraph, 150);
     document.getElementById('gptPaste').value = '';
-    toast('\u2705 ' + added + '\u4ef6\u53d6\u308a\u8fbc\u307f\u307e\u3057\u305f\uff01');
+    toast('✅ ' + added + '件取り込みました！');
   } else {
-    toast('\u30c7\u30fc\u30bf\u3092\u8aad\u307f\u53d6\u308c\u307e\u305b\u3093\u3067\u3057\u305f');
+    toast('データを読み取れませんでした');
   }
 }
 
