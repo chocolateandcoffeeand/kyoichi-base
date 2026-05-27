@@ -177,6 +177,28 @@ textarea { resize: vertical; min-height: 80px; }
 
 .empty-state { text-align: center; padding: 30px 20px; color: var(--text-muted); font-size: 13px; }
 
+/* テスト内タブ */
+.inner-tab-row { display: flex; gap: 8px; margin-bottom: 16px; }
+.inner-tab-btn { flex: 1; padding: 10px 6px; border-radius: 10px; border: 1.5px solid var(--border); background: white; font-size: 12px; font-weight: 700; color: var(--text-muted); cursor: pointer; font-family: inherit; text-align: center; }
+.inner-tab-btn.active { border-color: var(--primary); background: var(--primary); color: white; }
+.inner-tab-content { display: none; }
+.inner-tab-content.active { display: block; }
+
+/* 範囲表カード */
+.range-item { background: var(--bg); border-radius: var(--radius-sm); padding: 14px; margin-bottom: 10px; border: 1.5px solid #ED8936; }
+.range-item-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+.range-badge { font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 20px; color: white; background: #ED8936; }
+.range-memo { font-size: 12px; color: var(--text); line-height: 1.7; margin-top: 8px; white-space: pre-wrap; }
+
+/* ワークアコーディオン */
+.work-item-wrap { margin-bottom: 10px; }
+.work-item { display: flex; align-items: center; gap: 12px; background: var(--bg); border-radius: var(--radius-sm); padding: 14px; border: 1.5px solid var(--border); cursor: pointer; transition: border-color 0.2s; }
+.work-item.open { border-color: var(--accent); border-radius: var(--radius-sm) var(--radius-sm) 0 0; border-bottom: none; }
+.work-detail { display: none; background: white; border: 1.5px solid var(--accent); border-top: none; border-radius: 0 0 var(--radius-sm) var(--radius-sm); padding: 12px 14px; }
+.work-detail.open { display: block; }
+.work-detail-row { display: flex; gap: 8px; margin-bottom: 6px; font-size: 13px; color: var(--text); }
+.work-detail-label { color: var(--text-muted); font-weight: 700; min-width: 60px; font-size: 12px; }
+
 /* カウントダウン */
 .countdown-card { background: linear-gradient(135deg, #1A1A2E, #16213E); border-radius: var(--radius); padding: 20px; margin-bottom: 16px; text-align: center; position: relative; }
 .countdown-label { font-size: 12px; color: rgba(255,255,255,0.6); margin-bottom: 8px; }
@@ -218,7 +240,7 @@ textarea { resize: vertical; min-height: 80px; }
 
 <div class="header">
   <img src="logo.png" alt="きょういちベース">
-  <p>学習カルテを作って、きょういちに渡そう</p>
+  <p>学習カルテを作って、きょういちプランナーに渡そう</p>
 </div>
 
 <!-- 子ども切り替えバー -->
@@ -352,6 +374,12 @@ textarea { resize: vertical; min-height: 80px; }
 
 <!-- テスト結果 -->
 <section id="tab-tests" class="section">
+  <div class="inner-tab-row">
+    <button class="inner-tab-btn active" onclick="switchTestTab('results',this)">📊 テスト結果</button>
+    <button class="inner-tab-btn" onclick="switchTestTab('range',this)">📋 範囲表・予定</button>
+  </div>
+
+  <div id="innerTab-results" class="inner-tab-content active">
   <div class="card">
     <div class="card-title"><span class="icon">➕</span>テスト結果を追加</div>
     <label>テストの種類</label>
@@ -359,7 +387,6 @@ textarea { resize: vertical; min-height: 80px; }
       <button class="exam-type-btn selected" onclick="selTestType(this,'模試')">模試</button>
       <button class="exam-type-btn" onclick="selTestType(this,'定期テスト')">定期</button>
       <button class="exam-type-btn" onclick="selTestType(this,'実力テスト')">実力</button>
-      <button class="exam-type-btn" onclick="selTestType(this,'テスト範囲表')">範囲表</button>
     </div>
     <div class="info-row">
       <div><label>テスト名</label><input type="text" id="tName" placeholder="例：第2回模試"></div>
@@ -408,6 +435,26 @@ textarea { resize: vertical; min-height: 80px; }
     <div class="card-title"><span class="icon">📈</span>テスト結果一覧</div>
     <div id="testList"><div class="empty-state"><div class="empty-icon">📊</div>まだありません</div></div>
   </div>
+  </div><!-- /innerTab-results -->
+
+  <div id="innerTab-range" class="inner-tab-content">
+  <div class="card">
+    <div class="card-title"><span class="icon">📋</span>範囲表・予定一覧</div>
+    <p class="section-desc">取り込んだテスト範囲表がここに表示されます。</p>
+    <div id="rangeList"><div class="empty-state"><div class="empty-icon">📋</div>まだありません</div></div>
+  </div>
+  <div class="card">
+    <div class="card-title"><span class="icon">➕</span>範囲表・予定を追加</div>
+    <div class="info-row">
+      <div><label>テスト名</label><input type="text" id="rName" placeholder="例：2学期中間テスト"></div>
+      <div><label>実施日</label><input type="date" id="rDate"></div>
+    </div>
+    <label>範囲・メモ</label>
+    <textarea id="rMemo" placeholder="テスト範囲や注意事項を自由に..." style="min-height:100px;"></textarea>
+    <button class="btn btn-primary" style="margin-top:12px;" onclick="addRange()">📋 追加する</button>
+  </div>
+  </div><!-- /innerTab-range -->
+
 </section>
 
 <!-- ワーク -->
@@ -439,6 +486,7 @@ textarea { resize: vertical; min-height: 80px; }
   </div>
   <div class="card">
     <div class="card-title"><span class="icon">📖</span>登録済みワーク</div>
+    <p class="section-desc">タップすると詳細を確認できます。</p>
     <div id="workList"><div class="empty-state"><div class="empty-icon">📚</div>まだありません</div></div>
   </div>
 </section>
@@ -825,7 +873,16 @@ function parsePaste() {
     var memo = mi === -1 ? '' : sec.substring(mi + 5).trim();
     var type = getVal('種別');
 
-    if (type === '模試' || type === '定期テスト' || type === '実力テスト' || type === 'テスト範囲表') {
+    if (type === 'テスト範囲表') {
+      if (!data.ranges) data.ranges = [];
+      data.ranges.unshift({
+        id: Date.now() + Math.random(),
+        name: getVal('テスト名') || 'テスト範囲表',
+        date: getVal('実施日'),
+        memo: memo
+      });
+      added++;
+    } else if (type === '模試' || type === '定期テスト' || type === '実力テスト') {
       data.testResults.unshift({
         id: Date.now() + Math.random(),
         type: type,
@@ -1211,6 +1268,59 @@ function copyGraphText() {
   copyText(text,'📊 グラフデータをコピーしました！ChatGPTに貼り付けてね');
 }
 
+// =================== テスト内タブ切り替え ===================
+function switchTestTab(name, btn) {
+  document.querySelectorAll('.inner-tab-btn').forEach(function(b){ b.classList.remove('active'); });
+  document.querySelectorAll('.inner-tab-content').forEach(function(c){ c.classList.remove('active'); });
+  btn.classList.add('active');
+  document.getElementById('innerTab-' + name).classList.add('active');
+  if (name === 'range') renderRange();
+}
+
+// =================== 範囲表 ===================
+function addRange() {
+  var name = document.getElementById('rName').value.trim();
+  if (!name) { toast('テスト名を入力してください'); return; }
+  var data = getCurrentData();
+  if (!data.ranges) data.ranges = [];
+  data.ranges.unshift({
+    id: Date.now(), name: name,
+    date: document.getElementById('rDate').value,
+    memo: document.getElementById('rMemo').value
+  });
+  saveCurrentData(data); renderRange();
+  document.getElementById('rName').value = '';
+  document.getElementById('rDate').value = '';
+  document.getElementById('rMemo').value = '';
+  toast('✅ 追加しました！');
+}
+
+function renderRange() {
+  var data = getCurrentData();
+  var c = document.getElementById('rangeList');
+  if (!c) return;
+  var ranges = data.ranges || [];
+  if (!ranges.length) { c.innerHTML = '<div class="empty-state"><div class="empty-icon">📋</div>まだありません</div>'; return; }
+  c.innerHTML = ranges.map(function(r, i) {
+    return '<div class="range-item">' +
+      '<div class="range-item-header">' +
+      '<div><span class="range-badge">範囲表</span> <b style="font-size:13px;margin-left:6px;">' + r.name + '</b></div>' +
+      '<button class="del-btn" onclick="delRange(' + i + ')">✕</button>' +
+      '</div>' +
+      (r.date ? '<div style="font-size:11px;color:var(--text-muted);margin-bottom:6px;">📅 ' + r.date + '</div>' : '') +
+      (r.memo ? '<div class="range-memo">' + r.memo + '</div>' : '') +
+      '</div>';
+  }).join('');
+}
+
+function delRange(i) {
+  if (!confirm('削除しますか？')) return;
+  var data = getCurrentData();
+  data.ranges.splice(i, 1);
+  saveCurrentData(data); renderRange();
+  toast('削除しました');
+}
+
 // =================== ワーク ===================
 var EMOJI={'国語':'📗','数学':'📘','英語':'📙','理科':'🔬','社会':'🌍','算数':'🔢','その他':'📓'};
 function addWork(){
@@ -1227,10 +1337,28 @@ function renderWorks(){
   var c=document.getElementById('workList');
   if(!data.works||!data.works.length){c.innerHTML='<div class="empty-state"><div class="empty-icon">📚</div>まだありません</div>';return;}
   c.innerHTML=data.works.map(function(w,i){
-    return '<div class="work-item"><div class="work-icon">'+(EMOJI[w.subject]||'📓')+'</div>'+
+    return '<div class="work-item-wrap">'+
+      '<div class="work-item" onclick="toggleWork(this)">' +
+      '<div class="work-icon">'+(EMOJI[w.subject]||'📓')+'</div>'+
       '<div class="work-info"><div class="work-name">'+w.name+'</div><div class="work-sub">'+w.subject+(w.pages?' '+w.pages+'P':'')+(w.publisher?' '+w.publisher:'')+'</div></div>'+
-      '<button class="del-btn" onclick="delWork('+i+')">✕</button></div>';
+      '<span style="color:var(--text-muted);font-size:12px;">▼</span>'+
+      '</div>'+
+      '<div class="work-detail">'+
+      '<div class="work-detail-row"><span class="work-detail-label">教科</span><span>'+(w.subject||'未設定')+'</span></div>'+
+      (w.pages?'<div class="work-detail-row"><span class="work-detail-label">総ページ数</span><span>'+w.pages+'P</span></div>':'')+
+      (w.publisher?'<div class="work-detail-row"><span class="work-detail-label">出版社</span><span>'+w.publisher+'</span></div>':'')+
+      '<button class="btn btn-danger" style="margin-top:10px;padding:10px;" onclick="delWork('+i+')">🗑 このワークを削除</button>'+
+      '</div>'+
+      '</div>';
   }).join('');
+}
+
+function toggleWork(el) {
+  el.classList.toggle('open');
+  var detail = el.nextElementSibling;
+  detail.classList.toggle('open');
+  var arrow = el.querySelector('span:last-child');
+  arrow.textContent = detail.classList.contains('open') ? '▲' : '▼';
 }
 function delWork(i){if(!confirm('削除しますか？'))return;var data=getCurrentData();data.works.splice(i,1);saveCurrentData(data);renderWorks();toast('削除しました');}
 
