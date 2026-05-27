@@ -218,7 +218,7 @@ textarea { resize: vertical; min-height: 80px; }
 
 <div class="header">
   <img src="logo.png" alt="きょういちベース">
-  <p>学習カルテを作って、きょういちに渡そう</p>
+  <p>学習カルテを作って、きょういちプランナーに渡そう</p>
 </div>
 
 <!-- 子ども切り替えバー -->
@@ -790,6 +790,7 @@ function expandPrompt() {
 // =================== ペースト取り込み ===================
 function parsePaste() {
   var text = document.getElementById('gptPaste').value.trim();
+  alert('ボタン押せた！文字数:' + text.length);
   if (!text) { toast('テキストを貼り付けてください'); return; }
   var codeBlocks = text.match(/```[\s\S]*?```/g);
   var parseText = text;
