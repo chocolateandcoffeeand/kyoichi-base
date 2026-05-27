@@ -218,7 +218,7 @@ textarea { resize: vertical; min-height: 80px; }
 
 <div class="header">
   <img src="logo.png" alt="きょういちベース">
-  <p>学習カルテを作って、きょういちに渡そう</p>
+  <p>学習カルテを作って、きょういちプランナーに渡そう</p>
 </div>
 
 <!-- 子ども切り替えバー -->
@@ -791,37 +791,30 @@ function expandPrompt() {
 function parsePaste() {
   var text = document.getElementById('gptPaste').value.trim();
   if (!text) { toast('テキストを貼り付けてください'); return; }
-  alert('sections確認中...');
   var codeBlocks = text.match(/```[\s\S]*?```/g);
   var parseText = text;
   if (codeBlocks) parseText = codeBlocks.map(function(b){ return b.replace(/```\w*\n?/g,'').replace(/```$/,''); }).join('\n---\n');
-  // ---で分割、なければ【種別】で分割
   var sections = parseText.split(/\n?---+\n?/).filter(function(s){ return s.trim(); });
   if (sections.length === 1 && sections[0].indexOf('【種別】') !== -1) {
     sections = parseText.split(/(?=【種別】)/).filter(function(s){ return s.trim() && s.indexOf('【種別】') !== -1; });
   }
-  alert('sections:' + sections.length + ' type:' + (sections[0] ? sections[0].replace(/[\s\S]*【種別】([^\n]+)[\s\S]*/,'$1') : 'none'));
   var data = getCurrentData();
   var added = 0;
-  alert('forEach開始 sections数:' + sections.length);
   sections.forEach(function(sec) {
     var get = function(key) { var m = sec.match(new RegExp('【' + key + '】([^\n]+')); return m ? m[1].trim() : ''; };
     var getMemo = function() { var m = sec.match(/【メモ】([\s\S]+?)(?=\n【|$)/); return m ? m[1].trim() : ''; };
-    var type = get('種別');
-    var typeTrim = type.trim().replace(/[\u200b\u3000\ufeff]/g, '');
-    alert('type:[' + typeTrim + '] len=' + typeTrim.length + ' codes=' + Array.from(typeTrim).map(function(c){return c.charCodeAt(0).toString(16)}).join(','));
-    if (typeTrim === '模試' || typeTrim === '定期テスト' || typeTrim === '実力テスト' || typeTrim === 'テスト範囲表') {
-      type = typeTrim;
-      var newResult = { id: Date.now()+Math.random(), type: type, grade: currentChild ? currentChild.grade : '',
+    var rawType = get('種別');
+    var type = rawType.trim();
+    if (type === '模試' || type === '定期テスト' || type === '実力テスト' || type === 'テスト範囲表') {
+      data.testResults.unshift({
+        id: Date.now()+Math.random(), type: type, grade: currentChild ? currentChild.grade : '',
         name: get('模試名')||get('テスト名')||type, date: get('実施日'),
         kokugo: get('国語').replace('点',''), sugaku: get('数学').replace('点',''),
         eigo: get('英語').replace('点',''), rika: get('理科').replace('点',''),
         shakai: get('社会').replace('点',''), sansu: get('算数').replace('点',''),
         total: get('合計').replace('点',''), deviation: get('偏差値'),
         rank: get('学年順位').replace('位',''), judge: get('志望校判定'), memo: getMemo()
-      };
-      alert('追加するデータ: name=' + newResult.name + ' kokugo=' + newResult.kokugo + ' currentChild=' + (currentChild ? currentChild.name : 'null'));
-      data.testResults.unshift(newResult);
+      });
       added++;
     }
     if (type === 'ワーク') {
@@ -839,6 +832,7 @@ function parsePaste() {
     toast('✅ ' + added + '件取り込みました！');
   } else { toast('データを読み取れませんでした'); }
 }
+
 
 // =================== 基本情報 ===================
 function selExamType(btn, type) {
