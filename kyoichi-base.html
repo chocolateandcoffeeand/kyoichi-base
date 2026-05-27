@@ -790,8 +790,8 @@ function expandPrompt() {
 // =================== ペースト取り込み ===================
 function parsePaste() {
   var text = document.getElementById('gptPaste').value.trim();
-  alert('ボタン押せた！文字数:' + text.length);
   if (!text) { toast('テキストを貼り付けてください'); return; }
+  alert('sections確認中...');
   var codeBlocks = text.match(/```[\s\S]*?```/g);
   var parseText = text;
   if (codeBlocks) parseText = codeBlocks.map(function(b){ return b.replace(/```\w*\n?/g,'').replace(/```$/,''); }).join('\n---\n');
@@ -800,6 +800,7 @@ function parsePaste() {
   if (sections.length === 1 && sections[0].indexOf('【種別】') !== -1) {
     sections = parseText.split(/(?=【種別】)/).filter(function(s){ return s.trim() && s.indexOf('【種別】') !== -1; });
   }
+  alert('sections:' + sections.length + ' type:' + (sections[0] ? sections[0].replace(/[\s\S]*【種別】([^\n]+)[\s\S]*/,'$1') : 'none'));
   var data = getCurrentData();
   var added = 0;
   sections.forEach(function(sec) {
