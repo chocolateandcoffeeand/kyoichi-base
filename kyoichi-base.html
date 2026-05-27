@@ -218,7 +218,7 @@ textarea { resize: vertical; min-height: 80px; }
 
 <div class="header">
   <img src="logo.png" alt="きょういちベース">
-  <p>学習カルテを作って、きょういちプランナーに渡そう</p>
+  <p>学習カルテを作って、きょういちに渡そう</p>
 </div>
 
 <!-- 子ども切り替えバー -->
@@ -808,14 +808,16 @@ function parsePaste() {
     var getMemo = function() { var m = sec.match(/【メモ】([\s\S]+?)(?=\n【|$)/); return m ? m[1].trim() : ''; };
     var type = get('種別');
     if (type === '模試' || type === '定期テスト' || type === '実力テスト' || type === 'テスト範囲表') {
-      data.testResults.unshift({ id: Date.now()+Math.random(), type: type, grade: currentChild ? currentChild.grade : '',
+      var newResult = { id: Date.now()+Math.random(), type: type, grade: currentChild ? currentChild.grade : '',
         name: get('模試名')||get('テスト名')||type, date: get('実施日'),
         kokugo: get('国語').replace('点',''), sugaku: get('数学').replace('点',''),
         eigo: get('英語').replace('点',''), rika: get('理科').replace('点',''),
         shakai: get('社会').replace('点',''), sansu: get('算数').replace('点',''),
         total: get('合計').replace('点',''), deviation: get('偏差値'),
         rank: get('学年順位').replace('位',''), judge: get('志望校判定'), memo: getMemo()
-      });
+      };
+      alert('追加するデータ: name=' + newResult.name + ' kokugo=' + newResult.kokugo + ' currentChild=' + (currentChild ? currentChild.name : 'null'));
+      data.testResults.unshift(newResult);
       added++;
     }
     if (type === 'ワーク') {
