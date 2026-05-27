@@ -218,7 +218,7 @@ textarea { resize: vertical; min-height: 80px; }
 
 <div class="header">
   <img src="logo.png" alt="きょういちベース">
-  <p>学習カルテを作って、きょういちに渡そう</p>
+  <p>学習カルテを作って、きょういちプランナーに渡そう</p>
 </div>
 
 <!-- 子ども切り替えバー -->
@@ -803,10 +803,12 @@ function parsePaste() {
   alert('sections:' + sections.length + ' type:' + (sections[0] ? sections[0].replace(/[\s\S]*【種別】([^\n]+)[\s\S]*/,'$1') : 'none'));
   var data = getCurrentData();
   var added = 0;
+  alert('forEach開始 sections数:' + sections.length);
   sections.forEach(function(sec) {
     var get = function(key) { var m = sec.match(new RegExp('【' + key + '】([^\n]+')); return m ? m[1].trim() : ''; };
     var getMemo = function() { var m = sec.match(/【メモ】([\s\S]+?)(?=\n【|$)/); return m ? m[1].trim() : ''; };
     var type = get('種別');
+    alert('type判定: [' + type + '] length=' + type.length + ' charCode=' + (type.charCodeAt(0)));
     if (type === '模試' || type === '定期テスト' || type === '実力テスト' || type === 'テスト範囲表') {
       var newResult = { id: Date.now()+Math.random(), type: type, grade: currentChild ? currentChild.grade : '',
         name: get('模試名')||get('テスト名')||type, date: get('実施日'),
