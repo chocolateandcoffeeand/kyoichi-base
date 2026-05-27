@@ -218,7 +218,7 @@ textarea { resize: vertical; min-height: 80px; }
 
 <div class="header">
   <img src="logo.png" alt="きょういちベース">
-  <p>学習カルテを作って、きょういちプランナーに渡そう</p>
+  <p>学習カルテを作って、きょういちに渡そう</p>
 </div>
 
 <!-- 子ども切り替えバー -->
@@ -808,8 +808,10 @@ function parsePaste() {
     var get = function(key) { var m = sec.match(new RegExp('【' + key + '】([^\n]+')); return m ? m[1].trim() : ''; };
     var getMemo = function() { var m = sec.match(/【メモ】([\s\S]+?)(?=\n【|$)/); return m ? m[1].trim() : ''; };
     var type = get('種別');
-    alert('type判定: [' + type + '] length=' + type.length + ' charCode=' + (type.charCodeAt(0)));
-    if (type === '模試' || type === '定期テスト' || type === '実力テスト' || type === 'テスト範囲表') {
+    var typeTrim = type.trim().replace(/[\u200b\u3000\ufeff]/g, '');
+    alert('type:[' + typeTrim + '] len=' + typeTrim.length + ' codes=' + Array.from(typeTrim).map(function(c){return c.charCodeAt(0).toString(16)}).join(','));
+    if (typeTrim === '模試' || typeTrim === '定期テスト' || typeTrim === '実力テスト' || typeTrim === 'テスト範囲表') {
+      type = typeTrim;
       var newResult = { id: Date.now()+Math.random(), type: type, grade: currentChild ? currentChild.grade : '',
         name: get('模試名')||get('テスト名')||type, date: get('実施日'),
         kokugo: get('国語').replace('点',''), sugaku: get('数学').replace('点',''),
