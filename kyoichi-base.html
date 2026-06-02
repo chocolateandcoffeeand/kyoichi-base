@@ -240,7 +240,7 @@ textarea { resize: vertical; min-height: 80px; }
 
 <div class="header">
   <img src="logo.png" alt="きょういちベース">
-  <p>学習カルテを作って、きょういちプランナーに渡そう</p>
+  <p>学習カルテを作って、きょういちに渡そう</p>
 </div>
 
 <!-- 子ども切り替えバー -->
@@ -729,36 +729,21 @@ function hideChildModal() {
 
 function renderChildModalList() {
   var el = document.getElementById('childModalList');
-  el.innerHTML = allData.children.map(function(c, i){
-    var btns = '<button class="grade-up-btn" onclick="gradeUp(\'' + c.id + '\')">進級↑</button>';
-    btns += '<button onclick="event.stopPropagation();resetChild(\'' + c.id + '\')" style="background:white;border:1.5px solid #ED8936;border-radius:8px;padding:6px 10px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;color:#ED8936;">🔄 リセット</button>';
-    if (allData.children.length > 1) {
-      btns += '<button onclick="event.stopPropagation();removeChild(\'' + c.id + '\')" style="background:white;border:1.5px solid #E53E3E;border-radius:8px;padding:6px 10px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;color:#E53E3E;">🗑 削除</button>';
+  var total = allData.children.length;
+  var html = '';
+  allData.children.forEach(function(c) {
+    html += '<div class="child-list-item" style="flex-wrap:wrap;gap:6px;">';
+    html += '<div class="child-avatar">👦</div>';
+    html += '<div class="child-list-info" style="flex:1;"><div class="child-list-name">' + c.name + '</div><div class="child-list-grade">' + c.grade + '</div></div>';
+    html += '<div style="display:flex;gap:6px;flex-wrap:wrap;">';
+    html += '<button class="grade-up-btn" onclick="gradeUp(\'' + c.id + '\')">進級↑</button>';
+    html += '<button onclick="event.stopPropagation();resetChild(\'' + c.id + '\')" style="background:white;border:1.5px solid #ED8936;border-radius:8px;padding:6px 10px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;color:#ED8936;">🔄 リセット</button>';
+    if (total > 1) {
+      html += '<button onclick="event.stopPropagation();removeChild(\'' + c.id + '\')" style="background:white;border:1.5px solid #E53E3E;border-radius:8px;padding:6px 10px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;color:#E53E3E;">🗑 削除</button>';
     }
-    return '<div class="child-list-item" style="flex-wrap:wrap;gap:6px;">' +
-      '<div class="child-avatar">👦</div>' +
-      '<div class="child-list-info" style="flex:1;"><div class="child-list-name">' + c.name + '</div><div class="child-list-grade">' + c.grade + '</div></div>' +
-      '<div style="display:flex;gap:6px;flex-wrap:wrap;">' + btns + '</div>' +
-      '</div>';
-  }).join('');
-}
-
-function addChild() {
-  var name = document.getElementById('newChildName').value.trim();
-  if (!name) { toast('あだ名を入力してください'); return; }
-  var grade = document.getElementById('newChildGrade').value;
-  var id = 'child_' + Date.now();
-  allData.children.push({id: id, name: name, grade: grade});
-  // 基本情報にも反映
-  var newData = JSON.parse(JSON.stringify(CHILD_DATA_TEMPLATE));
-  newData.nickname = name;
-  newData.grade = grade;
-  saveChildData(id, newData);
-  saveAllData();
-  updateChildBar();
-  renderChildModalList();
-  document.getElementById('newChildName').value = '';
-  toast('✅ ' + name + 'を追加しました！');
+    html += '</div></div>';
+  });
+  el.innerHTML = html;
 }
 
 function resetChild(id) {
