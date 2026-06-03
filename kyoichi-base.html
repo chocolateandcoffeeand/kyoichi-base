@@ -177,6 +177,20 @@ textarea { resize: vertical; min-height: 80px; }
 
 .empty-state { text-align: center; padding: 30px 20px; color: var(--text-muted); font-size: 13px; }
 
+/* スケジュール一覧 */
+.schedule-item { display: flex; align-items: center; gap: 10px; padding: 12px 0; border-bottom: 1px solid var(--border); position: relative; }
+.schedule-item:last-child { border-bottom: none; }
+.schedule-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; background: var(--primary); }
+.schedule-date { font-size: 12px; font-weight: 700; color: var(--text-muted); min-width: 85px; }
+.schedule-name { font-size: 13px; color: var(--text); flex: 1; }
+.schedule-star { color: #F6AD55; font-size: 14px; }
+.schedule-hidden { opacity: 0.4; }
+.schedule-menu-btn { background: none; border: none; color: var(--text-muted); font-size: 18px; cursor: pointer; padding: 4px 8px; font-family: inherit; }
+.schedule-menu { display: none; position: absolute; right: 0; top: 100%; background: white; border: 1.5px solid var(--border); border-radius: 10px; padding: 8px; z-index: 50; min-width: 180px; box-shadow: 0 4px 12px rgba(0,0,0,0.12); }
+.schedule-menu.show { display: block; }
+.schedule-menu-item { display: flex; align-items: center; gap: 8px; padding: 10px 12px; font-size: 13px; font-weight: 600; color: var(--text); cursor: pointer; border-radius: 8px; border: none; background: none; width: 100%; font-family: inherit; text-align: left; }
+.schedule-menu-item:hover { background: var(--bg); }
+
 /* テスト内タブ */
 .inner-tab-row { display: flex; gap: 8px; margin-bottom: 16px; }
 .inner-tab-btn { flex: 1; padding: 10px 6px; border-radius: 10px; border: 1.5px solid var(--border); background: white; font-size: 12px; font-weight: 700; color: var(--text-muted); cursor: pointer; font-family: inherit; text-align: center; }
@@ -361,13 +375,8 @@ textarea { resize: vertical; min-height: 80px; }
     </div>
   </div>
   <div class="card">
-    <div class="card-title"><span class="icon">⏰</span>カウントダウンするイベントを選ぶ</div>
-    <p class="section-desc">選んだイベントが画面上部にカウントダウン表示されます。</p>
-    <div id="countdownSelectList"><div class="empty-state"><div class="empty-icon">📅</div>日程を登録してください</div></div>
-  </div>
-
-  <div class="card">
     <div class="card-title"><span class="icon">📋</span>今後のスケジュール一覧</div>
+    <p class="section-desc">⋮ をタップするとカウントダウン設定・重要マーク・非表示ができます。</p>
     <div id="scheduleList"></div>
   </div>
 </section>
@@ -840,7 +849,7 @@ function showTab(name) {
   var tabs = ['prompt','basic','calendar','tests','works','karte'];
   var i = tabs.indexOf(name);
   if (i >= 0) { document.querySelectorAll('.nav-btn')[i].classList.add('active'); document.querySelectorAll('.bnav-btn')[i].classList.add('active'); }
-  if (name === 'calendar') { renderCalendar(); renderCountdownSelectList(); }
+  if (name === 'calendar') { renderCalendar(); renderScheduleList(); }
   if (name === 'tests') setTimeout(renderGraph, 150);
 }
 
@@ -1047,9 +1056,11 @@ function setCalMode(mode) {
 
 function getEvents() {
   var events = {};
+  var hidden = JSON.parse(localStorage.getItem('kyoichiHidden') || '{}');
   var targetChildren = calMode === 'all' ? allData.children : [currentChild];
-  function addEv(dateStr, label, cls) {
+  function addEv(dateStr, label, cls, key) {
     if (!dateStr) return;
+    if (key && hidden[key]) return;
     var d = dateStr.replace(/\//g,'-');
     if (!events[d]) events[d] = [];
     events[d].push({label:label, cls:cls||''});
@@ -1059,16 +1070,22 @@ function getEvents() {
     var data = getChildData(child.id);
     (data.scheduleItems||[]).forEach(function(item){
       if (!item.date) return;
+      var d = normalizeDate(item.date);
       var cls = item.type==='exam'?'exam':item.type==='school'?'school':'test';
-      addEv(item.date, (calMode==='all'?child.name+':':'')+item.label, cls);
+      var key = 'sch_' + d + '_' + item.label;
+      addEv(d, (calMode==='all'?child.name+':':'')+item.label, cls, key);
     });
     (data.testResults||[]).forEach(function(r){
       if (!r.date) return;
-      addEv(r.date, (calMode==='all'?child.name+':':'')+(r.name||r.type), 'test');
+      var d = normalizeDate(r.date);
+      var key = 'tst_' + d + '_' + r.name;
+      addEv(d, (calMode==='all'?child.name+':':'')+(r.name||r.type), 'test', key);
     });
     (data.ranges||[]).forEach(function(r){
       if (!r.date) return;
-      addEv(normalizeDate(r.date), (calMode==='all'?child.name+':':'')+(r.name||'範囲表'), 'range');
+      var d = normalizeDate(r.date);
+      var key = 'rng_' + d + '_' + r.name;
+      addEv(d, (calMode==='all'?child.name+':':'')+(r.name||'範囲表'), 'range', key);
     });
   });
   return events;
@@ -1097,16 +1114,124 @@ function renderCalendar() {
     html+='<div class="'+cls+'"><div class="cal-day-num">'+d+'</div>'+evHtml+'</div>';
   }
   document.getElementById('calGrid').innerHTML = html;
-  var allEvents=[]; var todayStr=today.toISOString().split('T')[0];
-  Object.keys(events).sort().forEach(function(k){
-    if(k>=todayStr) events[k].forEach(function(ev){ allEvents.push({date:k,label:ev.label,cls:ev.cls}); });
+}
+
+
+// =================== スケジュール一覧 ===================
+function getAllScheduleItems() {
+  var data = getCurrentData();
+  var today = new Date(); today.setHours(0,0,0,0);
+  var todayStr = today.toISOString().split('T')[0];
+  var hidden = JSON.parse(localStorage.getItem('kyoichiHidden') || '{}');
+  var starred = JSON.parse(localStorage.getItem('kyoichiStarred') || '{}');
+  var items = [];
+
+  // スケジュールアイテム
+  (data.scheduleItems||[]).forEach(function(s) {
+    if (!s.date || !s.label) return;
+    var d = normalizeDate(s.date);
+    var key = 'sch_' + d + '_' + s.label;
+    items.push({key:key, date:d, label:s.label, cls:'exam', hidden:!!hidden[key], starred:!!starred[key], src:'schedule'});
   });
-  var listEl=document.getElementById('scheduleList');
-  if(!allEvents.length){listEl.innerHTML='<div class="empty-state"><div class="empty-icon">📅</div>今後の予定はありません</div>';return;}
-  listEl.innerHTML=allEvents.slice(0,20).map(function(ev){
-    var col=ev.cls==='exam'?'#E53E3E':ev.cls==='test'?'var(--purple)':ev.cls==='school'?'var(--accent-dark)':'var(--primary)';
-    return '<div class="schedule-item"><div class="schedule-dot" style="background:'+col+';"></div><div class="schedule-date">'+ev.date+'</div><div class="schedule-name">'+ev.label+'</div></div>';
-  }).join('');
+
+  // 範囲表
+  (data.ranges||[]).forEach(function(r) {
+    if (!r.date) return;
+    var d = normalizeDate(r.date);
+    var key = 'rng_' + d + '_' + r.name;
+    items.push({key:key, date:d, label:r.name||'範囲表', cls:'range', hidden:!!hidden[key], starred:!!starred[key], src:'range'});
+  });
+
+  // テスト結果の日付
+  (data.testResults||[]).forEach(function(r) {
+    if (!r.date || r.type === 'テスト範囲表') return;
+    var d = normalizeDate(r.date);
+    var key = 'tst_' + d + '_' + r.name;
+    items.push({key:key, date:d, label:r.name||r.type, cls:'test', hidden:!!hidden[key], starred:!!starred[key], src:'test'});
+  });
+
+  // 日付でソート・今日以降のみ
+  items = items.filter(function(it){ return it.date >= todayStr; });
+  items.sort(function(a,b){ 
+    if (a.starred && !b.starred) return -1;
+    if (!a.starred && b.starred) return 1;
+    return a.date < b.date ? -1 : 1; 
+  });
+  return items;
+}
+
+function renderScheduleList() {
+  var listEl = document.getElementById('scheduleList');
+  if (!listEl) return;
+  var items = getAllScheduleItems();
+  var cdTarget = getCountdownTarget();
+
+  if (!items.length) {
+    listEl.innerHTML = '<div class="empty-state"><div class="empty-icon">📅</div>今後の予定はありません</div>';
+    return;
+  }
+
+  var html = '';
+  items.forEach(function(item) {
+    var col = item.cls==='exam'?'#E53E3E':item.cls==='test'?'var(--purple)':item.cls==='range'?'#ED8936':'var(--accent-dark)';
+    var isCD = cdTarget && cdTarget.label===item.label && cdTarget.date===item.date;
+    var hiddenClass = item.hidden ? ' schedule-hidden' : '';
+    html += '<div class="schedule-item' + hiddenClass + '" data-key="' + item.key + '">';
+    html += '<div class="schedule-dot" style="background:' + col + ';"></div>';
+    html += '<div class="schedule-date">' + item.date + '</div>';
+    html += '<div class="schedule-name">' + (item.starred?'⭐ ':'') + (isCD?'⏰ ':'') + item.label + '</div>';
+    html += '<button class="schedule-menu-btn" data-key="' + item.key + '">⋮</button>';
+    html += '<div class="schedule-menu" id="menu_' + item.key.replace(/[^a-zA-Z0-9]/g,'_') + '">';
+    html += '<button class="schedule-menu-item" onclick="schedAction(\'' + item.key + '\',\'' + item.label + '\',\'' + item.date + '\',\'countdown\')">⏰ ' + (isCD?'カウントダウン解除':'カウントダウンに設定') + '</button>';
+    html += '<button class="schedule-menu-item" onclick="schedAction(\'' + item.key + '\',\'' + item.label + '\',\'' + item.date + '\',\'star\')">⭐ ' + (item.starred?'重要マーク解除':'重要マークをつける') + '</button>';
+    html += '<button class="schedule-menu-item" onclick="schedAction(\'' + item.key + '\',\'' + item.label + '\',\'' + item.date + '\',\'hide\')">🙈 ' + (item.hidden?'表示に戻す':'カレンダーから隠す') + '</button>';
+    html += '</div>';
+    html += '</div>';
+  });
+  listEl.innerHTML = html;
+
+  // メニューボタンのイベント
+  listEl.querySelectorAll('.schedule-menu-btn').forEach(function(btn) {
+    btn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      var key = btn.getAttribute('data-key');
+      var menuId = 'menu_' + key.replace(/[^a-zA-Z0-9]/g,'_');
+      var menu = document.getElementById(menuId);
+      // 他のメニューを閉じる
+      listEl.querySelectorAll('.schedule-menu.show').forEach(function(m){ if(m.id!==menuId) m.classList.remove('show'); });
+      menu.classList.toggle('show');
+    });
+  });
+
+  // 外クリックでメニューを閉じる
+  document.addEventListener('click', function() {
+    listEl.querySelectorAll('.schedule-menu.show').forEach(function(m){ m.classList.remove('show'); });
+  });
+}
+
+function schedAction(key, label, date, action) {
+  var hidden = JSON.parse(localStorage.getItem('kyoichiHidden') || '{}');
+  var starred = JSON.parse(localStorage.getItem('kyoichiStarred') || '{}');
+
+  if (action === 'countdown') {
+    selectCountdown(label, date);
+  } else if (action === 'star') {
+    if (starred[key]) delete starred[key];
+    else starred[key] = true;
+    localStorage.setItem('kyoichiStarred', JSON.stringify(starred));
+    toast(starred[key] ? '⭐ 重要マークをつけました' : '重要マークを解除しました');
+  } else if (action === 'hide') {
+    if (hidden[key]) delete hidden[key];
+    else hidden[key] = true;
+    localStorage.setItem('kyoichiHidden', JSON.stringify(hidden));
+    toast(hidden[key] ? '🙈 カレンダーから隠しました' : '表示に戻しました');
+    renderCalendar();
+  }
+
+  // メニューを閉じてリストを更新
+  document.querySelectorAll('.schedule-menu.show').forEach(function(m){ m.classList.remove('show'); });
+  renderScheduleList();
+  renderCountdownArea();
 }
 
 // =================== テスト ===================
