@@ -240,7 +240,7 @@ textarea { resize: vertical; min-height: 80px; }
 
 <div class="header">
   <img src="logo.png" alt="きょういちベース">
-  <p>学習カルテを作って、きょういちに渡そう</p>
+  <p>学習カルテを作って、きょういちプランナーに渡そう</p>
 </div>
 
 <!-- 子ども切り替えバー -->
@@ -1011,6 +1011,28 @@ function addScheduleItem() {
 function updSI(i, k, v) { var data=getCurrentData(); data.scheduleItems[i][k]=v; saveCurrentData(data); }
 function rmSI(i) { var data=getCurrentData(); data.scheduleItems.splice(i,1); saveCurrentData(data); renderScheduleItems(data); }
 
+// =================== 日付正規化 ===================
+function normalizeDate(dateStr) {
+  if (!dateStr) return '';
+  var s = dateStr.trim();
+  // すでにYYYY-MM-DD形式
+  if (/^\d{4}-\d{2}-\d{2}$/.test(s)) return s;
+  // YYYY/MM/DD形式
+  if (/^\d{4}\/\d{2}\/\d{2}$/.test(s)) return s.replace(/\//g, '-');
+  // MM月DD日 or M月D日
+  var m = s.match(/(\d{1,2})月(\d{1,2})日/);
+  if (m) {
+    var year = new Date().getFullYear();
+    var month = parseInt(m[1]);
+    var day = parseInt(m[2]);
+    // 月が現在より前なら来年と判断
+    var now = new Date();
+    if (month < now.getMonth() + 1) year++;
+    return year + '-' + ('0'+month).slice(-2) + '-' + ('0'+day).slice(-2);
+  }
+  return s;
+}
+
 // =================== カレンダー ===================
 var calYear, calMonth, calMode = 'this';
 function initCal() { var now=new Date(); calYear=now.getFullYear(); calMonth=now.getMonth(); }
@@ -1043,6 +1065,10 @@ function getEvents() {
     (data.testResults||[]).forEach(function(r){
       if (!r.date) return;
       addEv(r.date, (calMode==='all'?child.name+':':'')+(r.name||r.type), 'test');
+    });
+    (data.ranges||[]).forEach(function(r){
+      if (!r.date) return;
+      addEv(normalizeDate(r.date), (calMode==='all'?child.name+':':'')+(r.name||'範囲表'), 'range');
     });
   });
   return events;
