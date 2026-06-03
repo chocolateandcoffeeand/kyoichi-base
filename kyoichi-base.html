@@ -765,6 +765,8 @@ function resetChild(id) {
   fresh.nickname = child.name;
   fresh.grade = child.grade;
   saveChildData(id, fresh);
+  // カウントダウンもリセット
+  localStorage.removeItem('kyoichiCountdown');
   if (id === allData.currentChildId) {
     applyToForm();
     renderTests();
@@ -1644,7 +1646,10 @@ function renderCountdownArea() {
   var targetDate = new Date(target.date); targetDate.setHours(0,0,0,0);
   var days = Math.round((targetDate - today)/(1000*60*60*24));
   var html = '<div class="countdown-card">';
+  html += '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">';
   html += '<div class="countdown-label">📅 カウントダウン</div>';
+  html += '<button id="countdownClearBtn" style="background:rgba(255,255,255,0.2);border:none;border-radius:6px;padding:3px 8px;font-size:11px;color:rgba(255,255,255,0.7);cursor:pointer;font-family:inherit;">✕ 解除</button>';
+  html += '</div>';
   html += '<div class="countdown-event">' + target.label + '</div>';
   if(days > 0) {
     html += '<div class="countdown-num">' + days + '</div>';
@@ -1656,6 +1661,16 @@ function renderCountdownArea() {
   }
   html += '</div>';
   area.innerHTML = html;
+  // 解除ボタンのイベント
+  var clearBtn = document.getElementById('countdownClearBtn');
+  if (clearBtn) {
+    clearBtn.addEventListener('click', function() {
+      localStorage.removeItem('kyoichiCountdown');
+      renderCountdownArea();
+      renderCountdownSelectList();
+      toast('カウントダウンを解除しました');
+    });
+  }
 }
 
 function renderCountdownSelectList() {
